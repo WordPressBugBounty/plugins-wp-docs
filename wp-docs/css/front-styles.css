@@ -1,0 +1,132 @@
+/* CSS Document */
+.wpdocs_dir{
+	width:300px;
+}
+.wpdocs_folders{
+	border:0;
+}
+.wpdocs-views a{
+	cursor:pointer;
+	box-shadow: none !important;
+}
+.wpdocs-views a:hover {
+	box-shadow: none !important;
+}
+ol.breadcrumb{
+	margin:0 !important;
+	list-style:none;
+}
+ol.breadcrumb li.breadcrumb-item{
+	margin: 0.5rem 0 0 0;
+	list-style:none;
+	font-size:12px;
+}
+.wpdoc_container,
+.wpdoc_container *:not(.fa) {
+	font-family: Arial;
+}
+.wpdocs-front-add-media{
+	top:35%;
+	right: 30px;
+	cursor: pointer;
+	font-size: 16px;
+	color: #dc3545;
+}
+.wpdocs-front-add-media:not(.disabled):hover{
+	color: #B62F3B;
+}
+
+.wpdocs-front-add-media.disabled{
+	color: #b62f3a62;
+	cursor: not-allowed;
+}
+.wpdoc_container .folder_view.detail_view table{
+	width:96% !important;
+	margin:0 auto;
+}
+.wpdoc_container .folder_view.large_icon_view figure{
+	text-align:center;
+	padding:10px !important;
+	border-radius: .25rem;
+	min-height: 182px;
+	width: 100%;
+	margin: 0 0 10px 0;	
+}
+.wpdoc_container .folder_view.list_view figure{
+	padding: 6px 10px 0px !important;
+	border-radius: .25rem;
+	min-width: 100%;
+	margin: 0 0 2px;
+}
+.wpdoc_container .folder_view.list_view figure img{
+	box-shadow:none;
+}
+.wpdoc_container .folder_view figure small{
+	position:relative;
+	top:0px;
+	left:6px;
+}
+.wpdoc_container .folder_view.large_icon_view figure a.file{
+	height:100px;
+	display: block;
+	text-align:center;
+}
+
+div.list_view div.file_wrapper .file_view .file,
+div.detail_view tr.file_view td .file_view .file{
+	float:left;
+}
+.wpdoc_container .folder_view.large_icon_view figure a.file img{
+	max-height:100%;
+	max-width:100%;
+	margin:0 auto;
+	padding: 0;
+	border: 0;
+	box-shadow: none;	
+}
+.wpdoc_container .folder_view.large_icon_view figure figcaption{
+	padding:20px 0 0 0;
+}
+.wpdocs-searchbox{
+	float:left;
+	width:100%;
+	padding:10px;	
+}
+.wpdocs-searchbox input{
+	width:100%;	
+}
+.wp_docs_del_file{
+	top: 35%;
+	right:12px;
+	color: #dc3545;
+	cursor: pointer;
+	display: none;
+	font-size: 16px;
+}
+.wp_docs_del_file:hover{
+	color: #d01324;
+}
+.wp_docs_del_file.logged_out{
+	display:none !important;
+}
+.is_file .selected{
+	background-color: #0d66c2!important;
+}
+.wpdoc_container > div.card div.card-footer > svg{
+	cursor:pointer;
+}
+.wpdoc_container .detail_view th .fa-docs-sort:before{
+	content: '\f0dc';
+}
+
+
+.wpdoc_container .detail_view th{
+	user-select: none;
+	cursor: pointer;
+	font-weight: normal;
+}
+div.detail_view table tbody tr.is_deep,
+div.list_view div.file_wrapper.is_deep,
+div.large_icon_view div.is_deep{
+	display:none;
+}

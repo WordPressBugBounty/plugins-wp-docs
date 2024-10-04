@@ -1,0 +1,531 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2021-05-27 23:58+0500\n"
+"PO-Revision-Date: 2021-05-27 23:59+0500\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.4.3\n"
+"X-Poedit-Basepath: ..\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-1: inc\n"
+"X-Poedit-SearchPath-2: pro\n"
+"X-Poedit-SearchPath-3: index.php\n"
+
+#: inc/common.php:12 inc/functions.php:1431 inc/functions.php:1956
+#: inc/functions.php:1991 pro/wp-docs-pro.php:145
+msgid "Sorry, your nonce did not verify."
+msgstr "Entschuldigung, Ihre Nonce hat nicht überprüft."
+
+#: inc/common.php:37 inc/functions.php:1848
+msgid "Settings"
+msgstr "die Einstellungen"
+
+#: inc/common.php:39 inc/functions.php:1854 inc/wpdocs_settings.php:232
+msgid "Go Premium"
+msgstr "Gehen Sie Premium"
+
+#: inc/common.php:87
+msgid "How it works?"
+msgstr "Wie es funktioniert?"
+
+#: inc/common.php:88
+msgid "A default page is created with title"
+msgstr "Eine Standardseite mit Titel wird erstellt"
+
+#: inc/common.php:88
+msgid "in"
+msgstr "im"
+
+#: inc/common.php:88
+msgid "pages"
+msgstr "Seiten"
+
+#: inc/common.php:88
+msgid "You can create more pages with a shortcode"
+msgstr "Sie können weitere Seiten mit einem Shortcode erstellen"
+
+#: inc/common.php:88
+msgid ""
+"Create directories, sub-directories and add documents to list them with the "
+"shortcode."
+msgstr ""
+"Erstellen Sie Verzeichnisse, Unterverzeichnisse und fügen Sie Dokumente "
+"hinzu, um sie mit dem Shortcode aufzulisten."
+
+#: inc/common.php:88
+msgid "That's it."
+msgstr "Das ist es."
+
+#: inc/functions.php:74
+msgid "Do you want to delete this directory and data as well?"
+msgstr "Möchten Sie auch dieses Verzeichnis und diese Daten löschen?"
+
+#: inc/functions.php:75
+msgid "Select a target directory."
+msgstr "Wählen Sie ein Zielverzeichnis."
+
+#: inc/functions.php:76
+msgid "Sorry! File could not move, please try again."
+msgstr ""
+"Es tut uns leid! Datei konnte nicht verschoben werden, versuchen Sie es "
+"erneut."
+
+#: inc/functions.php:77
+msgid "Cannot move to the selected directory"
+msgstr "Kann nicht in das ausgewählte Verzeichnis verschoben werden"
+
+#: inc/functions.php:78 inc/functions.php:340
+msgid "Do you want to delete this file?"
+msgstr "Möchten Sie diese Datei löschen?"
+
+#: inc/functions.php:79
+msgid ""
+"Do you want to import all directories and files from Memphis Documents "
+"Library?"
+msgstr ""
+"Möchten Sie alle Verzeichnisse und Dateien aus der Memphis Documents Library "
+"importieren?"
+
+#: inc/functions.php:80
+msgid "Do you want to rollback the import?"
+msgstr "Möchten Sie den Import rückgängig machen?"
+
+#: inc/functions.php:81 inc/wpdocs_settings.php:409
+msgid "Select roles to allow upload"
+msgstr "Wählen Sie Rollen aus, um das Hochladen zu ermöglichen"
+
+#: inc/functions.php:82
+msgid "Do you want to rename this directory?"
+msgstr "Möchten Sie dieses Verzeichnis umbenennen?"
+
+#: inc/functions.php:83
+msgid "Do you want to reset all settings and clear directories?"
+msgstr "Möchten Sie alle Einstellungen zurücksetzen und Verzeichnisse löschen?"
+
+#: inc/functions.php:341
+msgid "Please select a file to delete."
+msgstr "Bitte wählen Sie eine zu löschende Datei aus."
+
+#: inc/functions.php:342
+msgid "Sorry, you can not delete this file."
+msgstr "Diese Datei kann leider nicht gelöscht werden."
+
+#: inc/functions.php:361
+msgid "Pro"
+msgstr "Profi"
+
+#: inc/functions.php:436 inc/wpdocs_settings.php:196
+msgid "Click here to rename"
+msgstr "Klicken Sie hier, um umzubenennen"
+
+#: inc/functions.php:436 inc/functions.php:598 inc/wpdocs_settings.php:196
+msgid "Click here to edit"
+msgstr "Klicken Sie hier zum Bearbeiten"
+
+#: inc/functions.php:436 inc/functions.php:599 inc/wpdocs_settings.php:196
+msgid "Click here to move"
+msgstr "Klicken Sie hier, um sich zu bewegen"
+
+#: inc/functions.php:436 inc/functions.php:600 inc/wpdocs_settings.php:196
+msgid "Click here to delete"
+msgstr "Klicken Sie hier zum Löschen"
+
+#: inc/functions.php:769 inc/wpdocs_settings.php:237
+msgid "Close"
+msgstr "Schließen"
+
+#: inc/functions.php:771
+msgid "Sorry"
+msgstr "Es tut uns leid"
+
+#: inc/functions.php:771
+msgid "You are not allowed to access this content."
+msgstr "Sie dürfen nicht auf diesen Inhalt zugreifen."
+
+#: inc/functions.php:845
+msgid "Home"
+msgstr "Zuhause"
+
+#: inc/functions.php:877
+msgid "Click here to delete selected files"
+msgstr "Klicken Sie hier, um ausgewählte Dateien zu löschen"
+
+#: inc/functions.php:883
+msgid "Click here to add files"
+msgstr "Klicken Sie hier, um Dateien hinzuzufügen"
+
+#: inc/functions.php:893
+msgid "Type here to filter..."
+msgstr "Geben Sie hier ein, um zu filtern ..."
+
+#: inc/functions.php:962 inc/functions.php:1026 inc/functions.php:1136
+msgid "Info!"
+msgstr "Die Info!"
+
+#: inc/functions.php:962 inc/functions.php:1026 inc/functions.php:1136
+msgid "Empty Directory."
+msgstr "Leeres Verzeichnis."
+
+#: inc/functions.php:1046
+msgid "Name"
+msgstr "Name"
+
+#: inc/functions.php:1047
+msgid "Created Date"
+msgstr "Erstellungsdatum"
+
+#: inc/functions.php:1048
+msgid "Modified Date"
+msgstr "Änderungsdatum"
+
+#: inc/functions.php:1049
+msgid "Type"
+msgstr "Art"
+
+#: inc/functions.php:1050
+msgid "Size"
+msgstr "Größe"
+
+#: inc/functions.php:1149
+msgid "Thumbnails View"
+msgstr "Miniaturansichten"
+
+#: inc/functions.php:1150
+msgid "List View"
+msgstr "Listenansicht"
+
+#: inc/functions.php:1151
+msgid "Details Views"
+msgstr "Detailansichten"
+
+#: inc/functions.php:1971
+msgid "No directories and files found."
+msgstr "Keine Verzeichnisse und Dateien gefunden."
+
+#: inc/wpdocs_settings.php:20
+msgid ""
+"Import all files from \"Memphis Documents Library\". On successful import, "
+"directories and files will be displayed in WP Docs. You can rollback import "
+"action, it is safe."
+msgstr ""
+"Importieren Sie alle Dateien aus der \"Memphis Documents Library\". Nach "
+"erfolgreichem Import werden Verzeichnisse und Dateien in WP Docs angezeigt. "
+"Sie können die Importaktion rückgängig machen, es ist sicher."
+
+#: inc/wpdocs_settings.php:41
+msgid "Memphis Directories"
+msgstr "Memphis-Verzeichnisse"
+
+#: inc/wpdocs_settings.php:42
+msgid "Memphis Files"
+msgstr "Memphis-Dateien"
+
+#: inc/wpdocs_settings.php:43
+msgid "Out of"
+msgstr "nicht in"
+
+#: inc/wpdocs_settings.php:63 inc/wpdocs_settings.php:67
+msgid "Please wait..."
+msgstr "Warten Sie mal..."
+
+#: inc/wpdocs_settings.php:63
+msgid "Undo Import"
+msgstr "Import rückgängig machen"
+
+#: inc/wpdocs_settings.php:67
+msgid "Import From Memphis Documents Library"
+msgstr "Import aus der Memphis Documents Library"
+
+#: inc/wpdocs_settings.php:87
+msgid "Memphis Documents Library"
+msgstr "Memphis Documents Library"
+
+#: inc/wpdocs_settings.php:153 pro/wp-docs-pro.php:250 pro/wp-docs-pro.php:253
+msgid "Security Level:"
+msgstr "Sicherheitsstufe:"
+
+#: inc/wpdocs_settings.php:153 pro/wp-docs-pro.php:250
+msgid "None"
+msgstr "Keiner"
+
+#: inc/wpdocs_settings.php:155
+msgid "Security Level is a Premium Feature"
+msgstr "Sicherheitsstufe ist eine Premium-Funktion"
+
+#: inc/wpdocs_settings.php:165
+msgid "Click here to go back"
+msgstr "Klicke hier um zurück zu kommen"
+
+#: inc/wpdocs_settings.php:167
+msgid "Add Files"
+msgstr "Dateien hinzufügen"
+
+#: inc/wpdocs_settings.php:169
+msgid "New folder"
+msgstr "Neuer Ordner"
+
+#: inc/wpdocs_settings.php:172
+msgid "Move selected folder to.."
+msgstr "Verschieben Sie den ausgewählten Ordner nach .."
+
+#: inc/wpdocs_settings.php:173
+msgid "Select directory to move"
+msgstr "Wählen Sie das zu verschiebende Verzeichnis aus"
+
+#: inc/wpdocs_settings.php:174
+msgid "Root"
+msgstr "Wurzel"
+
+#: inc/wpdocs_settings.php:177
+msgid "Confirm"
+msgstr "Bestätigen"
+
+#: inc/wpdocs_settings.php:183 inc/wpdocs_settings.php:219
+#: inc/wpdocs_settings.php:263 inc/wpdocs_settings.php:382
+msgid "Video Tutorial"
+msgstr "Videoanleitung"
+
+#: inc/wpdocs_settings.php:205
+msgid "Click here to download current directory"
+msgstr "Klicken Sie hier, um das aktuelle Verzeichnis herunterzuladen"
+
+#: inc/wpdocs_settings.php:206
+msgid "Download"
+msgstr "Herunterladen"
+
+#: inc/wpdocs_settings.php:209
+msgid "Shortcodes"
+msgstr "Shortcodes"
+
+#: inc/wpdocs_settings.php:211
+msgid "Click here to reset everything"
+msgstr "Klicken Sie hier, um alles zurückzusetzen"
+
+#: inc/wpdocs_settings.php:212
+msgid "Reset"
+msgstr "Zurücksetzen"
+
+#: inc/wpdocs_settings.php:223
+msgid "Attribute View"
+msgstr "Attributansicht"
+
+#: inc/wpdocs_settings.php:232
+msgid "Click here for Premium Version"
+msgstr "Klicken Sie hier für die Premium-Version"
+
+#: inc/wpdocs_settings.php:239
+msgid "Success!"
+msgstr "Erfolg!"
+
+#: inc/wpdocs_settings.php:239
+msgid "Options are updated successfully."
+msgstr "Optionen werden erfolgreich aktualisiert."
+
+#: inc/wpdocs_settings.php:246
+msgid "Bootstrap Based"
+msgstr "Bootstrap-basiert"
+
+#: inc/wpdocs_settings.php:246
+msgid "(Front-end)"
+msgstr "(Vorderes Ende)"
+
+#: inc/wpdocs_settings.php:254
+msgid "Hide Borders & Bars"
+msgstr "Rahmen & Balken ausblenden"
+
+#: inc/wpdocs_settings.php:262
+msgid "Filter Box"
+msgstr "Filterbox"
+
+#: inc/wpdocs_settings.php:262
+msgid "(On/Off)"
+msgstr "(An aus)"
+
+#: inc/wpdocs_settings.php:271
+msgid "Image Thumbnails"
+msgstr "Bild Miniaturansichten"
+
+#: inc/wpdocs_settings.php:271 inc/wpdocs_settings.php:279
+#: inc/wpdocs_settings.php:312 inc/wpdocs_settings.php:327
+#: inc/wpdocs_settings.php:381 inc/wpdocs_settings.php:391
+#: inc/wpdocs_settings.php:398 inc/wpdocs_settings.php:404
+#: inc/wpdocs_settings.php:432 inc/wpdocs_settings.php:447
+msgid "(Optional)"
+msgstr "(Optional)"
+
+#: inc/wpdocs_settings.php:279
+msgid "Details View Columns Settings"
+msgstr "Details Spalteneinstellungen anzeigen"
+
+#: inc/wpdocs_settings.php:286
+msgid "Date Created"
+msgstr "Datum erstellt"
+
+#: inc/wpdocs_settings.php:292
+msgid "Date Modified"
+msgstr "Datum geändert"
+
+#: inc/wpdocs_settings.php:298
+msgid "Item Type"
+msgstr "Gegenstandsart"
+
+#: inc/wpdocs_settings.php:304
+msgid "Item Size"
+msgstr "Artikelgröße"
+
+#: inc/wpdocs_settings.php:312
+msgid "Customization"
+msgstr "Anpassung"
+
+#: inc/wpdocs_settings.php:315
+msgid "Icon Size"
+msgstr "Symbolgröße"
+
+#: inc/wpdocs_settings.php:317
+msgid "Font Size"
+msgstr "Schriftgröße"
+
+#: inc/wpdocs_settings.php:327
+msgid "Do you need documents inside tabs?"
+msgstr "Benötigen Sie Dokumente in Registerkarten?"
+
+#: inc/wpdocs_settings.php:329
+msgid "WP Responsive Tabs"
+msgstr "WP Responsive Tabs"
+
+#: inc/wpdocs_settings.php:335
+msgid "WP Responsive Tabs is a recommended tabs plugin."
+msgstr "WP Responsive Tabs ist ein empfohlenes Tabs-Plugin."
+
+#: inc/wpdocs_settings.php:349
+msgid "Attribute Order By"
+msgstr "Kenmerk Volgorde"
+
+#: inc/wpdocs_settings.php:350
+msgid "Attribute Order"
+msgstr "Attribuutvolgorde"
+
+#: inc/wpdocs_settings.php:365
+msgid "Display Filename or Post Title?"
+msgstr "Bestandsnaam of berichttitel weergeven?"
+
+#: inc/wpdocs_settings.php:365
+msgid "(Default: Filename)"
+msgstr "(Standard: Dateiname)"
+
+#: inc/wpdocs_settings.php:373
+msgid "Sortable Columns?"
+msgstr "Sorteerbare kolommen?"
+
+#: inc/wpdocs_settings.php:381
+msgid "File Upload Front-end"
+msgstr "Datei-Upload-Frontend"
+
+#: inc/wpdocs_settings.php:381 inc/wpdocs_settings.php:391
+#: inc/wpdocs_settings.php:398 inc/wpdocs_settings.php:404
+#: inc/wpdocs_settings.php:420 inc/wpdocs_settings.php:432
+#: inc/wpdocs_settings.php:438 inc/wpdocs_settings.php:447
+msgid "(Premium)"
+msgstr "(Prämie)"
+
+#: inc/wpdocs_settings.php:381
+msgid "This icon will appear on front-end for users"
+msgstr "Dieses Symbol wird im Front-End für Benutzer angezeigt"
+
+#: inc/wpdocs_settings.php:391
+msgid "Do not make files public uploaded by users"
+msgstr "Machen Sie keine von Benutzern hochgeladenen Dateien öffentlich"
+
+#: inc/wpdocs_settings.php:398
+msgid "User can delete the files from front-end?"
+msgstr "Benutzer kann die Dateien aus dem Front-End löschen?"
+
+#: inc/wpdocs_settings.php:404
+msgid "Allow user roles which can upload files"
+msgstr "Erlaube Benutzerrollen, die Dateien hochladen können"
+
+#: inc/wpdocs_settings.php:420
+msgid "Allowed File Types"
+msgstr "Zulässige Dateitypen"
+
+#: inc/wpdocs_settings.php:422
+msgid "Leave blank if you want to allow all type of files"
+msgstr "Lassen Sie das Feld leer, wenn Sie alle Dateitypen zulassen möchten"
+
+#: inc/wpdocs_settings.php:432
+msgid "Ajax Based Directory Navigation"
+msgstr "Ajax-basierte Verzeichnisnavigation"
+
+#: inc/wpdocs_settings.php:438
+msgid "Update URI"
+msgstr "URI aktualisieren"
+
+#: inc/wpdocs_settings.php:438
+msgid "(Works well for single instance)"
+msgstr "(Funktioniert gut für eine einzelne Instanz)"
+
+#: inc/wpdocs_settings.php:447
+msgid "Appearance Customization"
+msgstr "Anpassung des Aussehens"
+
+#: inc/wpdocs_settings.php:453
+msgid "Directory Background Color"
+msgstr "Hintergrundfarbe des Verzeichnisses"
+
+#: inc/wpdocs_settings.php:459
+msgid "Directory Text Color"
+msgstr "Verzeichnis-Textfarbe"
+
+#: inc/wpdocs_settings.php:466
+msgid "Directory Hover Background Color"
+msgstr "Hintergrundfarbe des Verzeichnis-Hovers"
+
+#: inc/wpdocs_settings.php:473
+msgid "Directory Hover Text Color"
+msgstr "Directory Hover-Textfarbe"
+
+#: inc/wpdocs_settings.php:482
+msgid "Click here for demo"
+msgstr "Klicken Sie hier für eine Demo"
+
+#: inc/wpdocs_settings.php:488
+msgid "Image Slider"
+msgstr "Bildschieberegler"
+
+#: io/functions-inner.php:269 io/functions-inner.php:548
+msgid "Loading"
+msgstr "Wird geladen"
+
+#: io/functions-inner.php:514
+msgid "Click here to Scan QR Code"
+msgstr "Klicken Sie hier, um den QR-Code zu scannen"
+
+#: io/functions-inner.php:520
+msgid "Click here for Android Application"
+msgstr "Klicken Sie hier für die Android-Anwendung"
+
+#: io/functions-inner.php:522
+msgid "Get it on"
+msgstr "Mach weiter so"
+
+#~ msgid "Details View Sorting Option?"
+#~ msgstr "Details Sortieroption anzeigen?"
+
+#~ msgid "Version"
+#~ msgstr "Ausführung"
+
+#~ msgid "Select"
+#~ msgstr "Wählen"
+
+#~ msgid "id"
+#~ msgstr "Ich würde"
+
+#~ msgid "title"
+#~ msgstr "Titel"

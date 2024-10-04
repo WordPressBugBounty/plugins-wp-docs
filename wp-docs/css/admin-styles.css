@@ -1,0 +1,725 @@
+/* CSS Document */
+	li.current a[href="options-general.php?page=wpdocs"],
+	li.current:hover a[href="options-general.php?page=wpdocs"]{
+		background: url('../img/folder.png') no-repeat !important;
+		background-position: 11px 7px !important;
+		padding-left: 30px !important;
+		background-color: rgba(255,255,255,0.3) !important;
+		padding-bottom: 8px !important;
+	}
+	li.current:hover a[href="options-general.php?page=wpdocs"]{
+		background-color: rgba(255,255,255,0.4) !important;
+	}
+	
+	.wpdocs_folders .wpdocs_toolbar{
+		border-bottom:1px solid #999;
+		float:left;
+		width:100%;
+		padding: 0 10px;
+	}
+	.wpdocs_folders .wpdocs_toolbar ul li{
+		margin-right:4px;
+	}
+	.wpdocs_folders .new-file {
+		font-size:12px;
+		padding: 0 0 0 2px;
+		cursor:pointer;
+		margin: 9px 8px 0 0px;
+		display: block;	
+	}
+	.wpdocs_folders .new-file i{
+		font-size:16px;
+		margin-right:2px;
+	}
+	.wpdocs_folders .new-folder,
+	.wpdocs_folders .new-shortcut {
+		cursor: pointer;
+		background: url('../img/folder.png') no-repeat;
+		background-position: 2px 0px;
+		padding: 0 0 0 22px;
+		font-size: 12px;
+		margin: 10px 8px 0 0px;
+		display: block;	
+	}
+	.wpdocs_folders .new-shortcut {
+		background: url('../img/shortcut.png') no-repeat;
+	}
+	.wpdocs_folders .back-folder{
+		cursor: pointer;
+		padding: 0 0 0 0;
+		font-size: 18px;	
+		margin: 8px 8px 0 0px;
+		display: block;	
+	}
+	.wpdocs_folders .back-folder[data-id="0"]{
+		display:none;
+	}
+	.wpdocs_folders .new-folder:hover,
+	.wpdocs_folders .back-folder:hover,
+	.wpdocs_folders .new-file:hover {
+		background-color:rgba(255,255,0, 0.3);
+		
+	}
+	.wpdocs_log{
+		width:32%;
+		border:1px solid #666;
+		padding:10px;
+		background-color:#333;
+		color:#fff;
+		float:left;
+		min-height:400px;
+		overflow-y:auto;
+		overflow-x: hidden;
+	}
+	.wpdocs_list ul li > span {
+		float: left;
+		width: 100%;
+		height: 20px;
+		padding: 30px 0 0 25px;
+		position: relative;
+		background: transparent;
+		visibility:hidden;
+	}
+	.wpdocs_list ul li:hover > span{
+		visibility:visible;
+		background-color: rgba(255,255,255,0.3);
+	}
+	a.wpd-edit,
+	a.wpd-copy,
+	a.wpd-move,
+	a.wpd-trash{
+		background: url('../img/edit.png') no-repeat;
+		float: left;
+		width: 16px;
+		height: 16px;
+		margin: 0 10px 0 0;
+		cursor:pointer;
+		position: absolute;
+		top: 5px;
+	}
+	
+	a.wpd-edit{
+	
+		left: 20px;
+	
+	}
+	
+	a.wpd-trash{
+	
+		background: url('../img/trash.png') no-repeat;
+		margin: 0;
+		position: absolute;
+		right: 20px;
+	
+	}
+	span.wpd_action_span_inner {
+		margin: 0;
+		position: relative;
+		display: block;
+		width: 24px;
+		top: -30px;
+		left: 24px;
+		height: 22px;
+		overflow:hidden;
+	}
+	span.wpd_action_span_inner:hover {
+		height: 50px;
+	}
+	a.wpd-move{
+	
+		background: url('../img/moves.png') no-repeat;
+
+	
+	}
+	a.wpd-copy{
+	
+		background: url('../img/copy.png') no-repeat;
+	
+	}	
+	a.wpd-move:hover {
+		border-bottom: 2px solid maroon;
+	}
+	a.wpd-copy:hover{
+		border-bottom: 2px solid green;
+	}
+	a.wpd-copy, a.wpd-move {
+		display: block;
+		clear: both;
+		float: none;
+		position: relative;
+		margin: 0 auto 6px auto;
+		
+	}
+	.wpdocs_folders .wpdocs_list ul li{
+		overflow:visible;
+	}
+	
+	.wpd_action_span{
+	
+	}
+	
+	.wpdocs-options{
+	}
+	.wpdocs-options ul{
+	}
+	.wpdocs-options ul li {
+		width: 100%;
+		float: left;
+	}
+	.wpdocs-options ul li > button{
+		cursor:pointer;
+	}
+	.wpdocs_move_folder_to{
+		display: none;
+	}
+	.wpdocs_move_folder_to select {
+		border: 1px solid rgba(0,0,0,0.1);
+		margin: 4px 0 0 0;
+	}
+	
+	.wpdocs_move_folder_to select:focus {
+	
+		border-color: transparent;
+		color: #016087;
+		box-shadow: 0 0 0 0 transparent;
+	}
+	.wpdocs_move_folder_to button {
+		cursor: pointer;
+		position: relative;
+		top: 1px;
+		font-size: 12px;
+		padding: 2px 10px 4px 10px;
+		border-radius: 20px;
+		background: #6c757d;;
+		color: white;
+		border: 1px solid #6c757d;
+		margin: 4px 0 0 8px;
+		text-transform:capitalize;
+	}
+	
+	.wpdocs_move_folder_to button:hover {
+	
+		background: #5a6268;
+		color: white;
+		border: 1px solid #5a6268;;
+	}
+	
+	.wpdocs_move_folder_to button.copy {
+		background: #390;
+	}
+	.wpdocs_move_folder_to button.move {
+		background: #900;
+	}	
+	
+	.wpdocs_in_action .wpdocs-nav{
+		width: 100%;
+	}
+	
+	.wpdocs_in_action .wpdocs-nav .breadcrumb{
+	
+		margin: 0;
+	
+	}
+	.wpdocs_list .ab-dir.ab-new {
+		background-color: rgba(233,212,96,0.3);
+		border-radius: 10px;
+	}
+	.wpdocs_log ul li.premium-shortcodes,
+	.wpdocs_log ul li.premium-features,
+	.wpdocs_log ul li.addon-features,
+	.wpdocs_log ul li.promotions {
+		border-top: 1px solid #ffc107;
+		margin: 0px 0 40px;
+	}
+	.wpdocs_log ul li.premium-shortcodes:after,
+	.wpdocs_log ul li.premium-features:after,
+	.wpdocs_log ul li.addon-features:after,
+	.wpdocs_log ul li.promotions:after {
+		content: "Premium Features";
+		background-color: #ffc107;
+		color: #000;
+		font-size: 12px;
+		padding: 0px 12px 2px;
+		float: right;
+		
+	}
+
+	.wpdocs_log ul li.addon-features {
+		float: right;
+		margin: 10px 0 0 0;
+	}
+	.wpdocs_log ul li.addon-features + li a {
+		display: block;
+		margin: 30px 0;
+		width:100%;
+		text-align:center;
+	}	
+	.wpdocs_log ul li.premium-shortcodes:after{
+		content: "Premium Shortcodes";
+	}
+	.wpdocs_log ul li.addon-features:after {
+		content: "Tabs Plugin for Docs";
+	}	
+	.wpdocs_log ul li.promotions:after {
+		content: "More Plugins";
+	}
+	.wpdocs_log ul li input[type="color"] {
+		padding: 0;
+		cursor: pointer;
+		position: relative;
+		top: 4px;
+		border: 0;
+		border-radius: 10px;
+		height: 18px;
+		width: 18px;
+		margin: 0 10px 0 0;
+	}
+	.wpdocs_folders li select[name^="wpdocs_roles"],
+	a.security_level {
+		position: relative;
+		top: 4px;
+		border: 0;
+		width: 222px;
+	}
+	a.security_level{
+		font-size:12px;
+		top:5px;
+	}
+	.wpdocs_android {
+		position: absolute;
+		right: 20px;
+		top: 26px;
+	}
+	.wpdocs-options ul li a,
+	a.wpdocs-tutorial{
+		float:right;
+		font-size:12px;
+		color:#ffc107;
+		text-decoration:none;
+		position:relative;
+		top:4px;
+	}
+	.wpdocs-options ul li label{
+		width:100%;
+	}
+	.wpdocs-options ul li a:hover{
+		text-decoration:underline;
+	}
+	.wp-docs-attribs{
+		
+	}
+	.wp-docs-attribs b{
+		color:#ffc107;
+		
+	}
+	.wpdocs-customization{
+		float:left;
+		width:100%;
+	}
+	.wpdocs-customization ul{
+		float:left;
+		width:100%;
+	}	
+	.wpdocs-customization ul li{
+		position:relative;
+		float:left;
+		width:100%;
+	}		
+	.wpdocs-customization ul li span.fa{
+		font-size:30px;
+		margin-right:20px;
+		float:left;
+	}			
+	.wpdocs-customization ul li label{
+		float:left;
+		width:60%;
+	}
+	.wpdocs-customization ul li input[type="text"]{
+		width:60px;
+		height:30px;
+	}
+	.wpdocs-customization ul li label small{
+		margin-left:10px;
+	}
+	.wpdocs_meta_links .wpdocs_show_option:hover,
+	.wpdocs_meta_links .wpdocs_show_option:focus,
+	.wpdocs_meta_links .wpdocs_show_option:active,
+	.wpdocs_meta_links .wpdocs_show_option{
+		border: 1px solid #ccd0d4;
+		border-top: none;
+		height: auto;
+		margin-bottom: 0;
+		padding: 3px 6px 3px 28px;
+		background-color: #fff;
+		border-radius: 0 0 4px 4px;
+		color: #72777c;
+		line-height: 1.7;
+		box-shadow: 0 0 0 transparent;
+		transition: box-shadow 10s ease-in-out;
+		background-image: url("../img/mdocs.png");
+		background-repeat: no-repeat;
+		background-size: 18px;
+		background-position: 6px 6px;
+
+	}
+	.wpdocs_meta_links .wpdocs_show_option:hover {
+		background-color: #0280FF;
+		transition: box-shadow 10s ease-in-out;
+		color: #fff;
+		background-image:url("../img/mdocs-hover.png");
+	}
+
+	.wpdocs_option_wrapper .wpdocs_screen_meta,
+	.wpdocs_meta_links .wpdocs_link_wrap{
+		position: relative;
+	}
+
+	.wpdocs_meta_links .wpdocs_link_wrap{
+		margin-top: -2px;
+	}
+
+	.wpdocs_option_wrapper .wpdocs_screen_meta{
+		border: 1px solid #ccd0d4;
+		display: none;
+		padding: 10px 10px 20px 10px;
+	}
+
+	.wpdocs_option_wrapper{
+		width: 600px;
+		margin: 0 auto;
+		/* text-align: center; */
+	}
+
+	.wpdocs_meta_links .wpdocs_show_option[data-show="true"] .fa:before{
+		content: "\f0d8";
+	}
+
+	.wpdocs_meta_links .wpdocs_show_option[data-show="false"] .fa:before{
+		content: "\f0d7";
+	}
+
+	.wpdocs_option_wrapper li.list-group-item{
+		border-top: none;
+		border-left: none;
+		border-right: none;
+		margin-bottom: 0px;
+	}
+
+	.wp_docs_importing_alert,
+	.wp_docs_importing{
+		display: none;
+	}
+	
+	.wpdocs-specific-sections {
+		border-top: 4px solid #dc3545;
+		padding: 16px 0 10px;
+		border-bottom: 4px solid #dc3545;
+		margin: 10px 0 20px;
+	}
+	
+	.wpdocs-specific-sections > button,
+	.wpdocs-specific-sections > div.modal{
+		display:block;
+	}
+	
+	.wpdocs-general-sections > button,
+	.wpdocs-specific-sections > div.modal{
+		display:none;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	.modal.modal-left .modal-dialog,
+	.modal.modal-right .modal-dialog,
+	.modal.modal-top .modal-dialog,
+	.modal.modal-bottom .modal-dialog {
+	  -webkit-transform: translate3d(0%, 0, 0);
+	  -ms-transform: translate3d(0%, 0, 0);
+	  -o-transform: translate3d(0%, 0, 0);
+	  transform: translate3d(0%, 0, 0);
+	}
+	
+	/* Left & Right */
+	
+	.modal.modal-left .modal-dialog,
+	.modal.modal-right .modal-dialog {
+	  position: fixed;
+	  margin: auto;
+	  width: 500px;
+	  max-width: 100%;
+	  height: 100%;
+	}
+	
+	.modal.modal-left .modal-content,
+	.modal.modal-right .modal-content {
+	  height: 100%;
+	  overflow-y: auto;
+	  background-color:transparent;
+	}
+	
+	.modal.modal-left .modal-body,
+	.modal.modal-right .modal-body {
+	  padding: 15px 15px 80px;
+	}
+	
+	.modal.modal-left.fade .modal-dialog {
+	  left: -500px;
+	  -webkit-transition: opacity 0.3s linear, left 0.3s ease-out;
+	  -moz-transition: opacity 0.3s linear, left 0.3s ease-out;
+	  -o-transition: opacity 0.3s linear, left 0.3s ease-out;
+	  transition: opacity 0.3s linear, left 0.3s ease-out;
+	}
+	
+	.modal.modal-left.fade.show .modal-dialog {
+	  left: 0;
+	}
+	
+	.modal.modal-right.fade .modal-dialog {
+	  right: -500px;
+	  -webkit-transition: opacity 0.3s linear, right 0.3s ease-out;
+	  -moz-transition: opacity 0.3s linear, right 0.3s ease-out;
+	  -o-transition: opacity 0.3s linear, right 0.3s ease-out;
+	  transition: opacity 0.3s linear, right 0.3s ease-out;
+	}
+	
+	.modal.modal-right.fade.show .modal-dialog {
+	  right: 0;
+	  padding: 32px 0 0 0;
+	  background-color:#333;
+	}
+	
+	.modal.modal-left .modal-content,
+	.modal.modal-right .modal-content,
+	.modal.modal-top .modal-content,
+	.modal.modal-bottom .modal-content,
+	.modal.modal-full .modal-content {
+	  border-radius: 0;
+	  border: none;
+	}
+	
+	.modal.modal-left .modal-dialog.modal-sm,
+	.modal.modal-right .modal-dialog.modal-sm {
+	  width: 480px;
+	}
+	
+	.modal.modal-left .modal-dialog.modal-lg,
+	.modal.modal-right .modal-dialog.modal-lg {
+	  width: 800px;
+	}
+	
+	.modal.modal-left .modal-dialog.modal-xl,
+	.modal.modal-right .modal-dialog.modal-xl {
+	  width: 1140px;
+	}
+	
+	/* Top and Bottom */
+	
+	.modal.modal-top .modal-dialog,
+	.modal.modal-bottom .modal-dialog {
+	  position: fixed;
+	  margin: auto;
+	  width: 100%;
+	  max-width: 100%;
+	  height: auto;
+	}
+	
+	.modal.modal-top .modal-content,
+	.modal.modal-bottom .modal-content {
+	  height: auto;
+	  overflow-y: auto;
+	}
+	
+	.modal.modal-top .modal-body,
+	.modal.modal-bottom .modal-body {
+	  padding: 15px 15px;
+	}
+	
+	/* Top */
+	
+	.modal.modal-top.fade .modal-dialog {
+	  top: -100%;
+	  -webkit-transition: opacity 0.3s linear, top 0.3s ease-out;
+	  -moz-transition: opacity 0.3s linear, top 0.3s ease-out;
+	  -o-transition: opacity 0.3s linear, top 0.3s ease-out;
+	  transition: opacity 0.3s linear, top 0.3s ease-out;
+	}
+	
+	.modal.modal-top.fade.show .modal-dialog {
+	  top: 0;
+	}
+	
+	/* Bottom */
+	
+	.modal.modal-bottom.fade .modal-dialog {
+	  bottom: -100%;
+	  -webkit-transition: opacity 0.3s linear, bottom 0.3s ease-out;
+	  -moz-transition: opacity 0.3s linear, bottom 0.3s ease-out;
+	  -o-transition: opacity 0.3s linear, bottom 0.3s ease-out;
+	  transition: opacity 0.3s linear, bottom 0.3s ease-out;
+	}
+	
+	.modal.modal-bottom.fade.show .modal-dialog {
+	  bottom: 0;
+	}
+	
+	.modal.modal-bottom.fade .modal-dialog {
+	  bottom: -100%;
+	}
+	
+	/* Full Screen */
+	
+	.modal.modal-full .modal-dialog {
+	  position: fixed;
+	  margin: auto;
+	  width: 100%;
+	  max-width: 100%;
+	  height: 100%;
+	}
+	
+	.modal.modal-full .modal-content {
+	  height: 100%;
+	  overflow-y: auto;
+	}
+	
+	.modal.modal-full .close-modal {
+	  position: fixed;
+	  top: 0;
+	  right: 3rem;
+	}
+	
+	/* Footer */
+	
+	.modal-footer-fixed {
+	  position: fixed;
+	  bottom: 0;
+	  width: 100%;
+	  background: #333;
+	  border-radius: 0;
+	}
+	
+	.modal-footer-fixed button{
+		cursor:pointer;
+	}
+	/* XS */
+	
+	.modal.modal-left.xs .modal-body,
+	.modal.modal-right.xs .modal-body {
+	  padding: 15px;
+	}
+	
+	/* Full screen modal menu indicators */
+	
+	a.has-sub:after { font-family: "FontAwesome"; }
+	a.has-sub:after { content: "\f107"; margin-left: 1rem; }
+	a.has-sub[aria-expanded="true"]:after { content: "\f106"; }
+	
+	.wpdocs_log .modal-header button.close{
+		color: #fff;
+	}
+	select.wpdocs_options_allowed_role {
+		width: 100%;
+	}
+	
+	.translate_wpdocs_urls {
+		padding: 10px 0 0 6px;
+	}
+	.translate_wpdocs_urls #translate_wpdocs {
+		width: 100%;
+		height: 40px;
+		border: 1px solid #ccc;
+		border-radius: 0;
+	}
+	.translate_wpdocs_urls .translate_wpdocs {
+		padding: 6px 0 0 0;
+		font-size: 14px;
+	}
+	.wpdocs-wrapper .nav-tab-wrapper a.nav-tab{
+		cursor:pointer;
+	}
+	.wpdocs-wrapper .nav-tab-wrapper .nav-tab.nav-tab-active {
+		background-color: #fff;
+	}
+	.nav-tab-wrapper i.fas.fa-file-word {
+		color: #3FA0E7;
+	}
+	.nav-tab-wrapper i.fas.fa-file-pdf {
+		color: #D31517;
+	}
+	.nav-tab-wrapper i.fa.fa-folder {
+		color: #F7C327;
+	}
+	.nav-tab-wrapper i.fas.fa-file-image {
+		color: #390;
+	}
+	.nav-tab-wrapper i.fas.fa-file-archive {
+		color: #a267a2;
+	}
+	.wrap.wpdocs-wrapper .nav-tab-content.hide{
+		display:none;
+	}
+	body.settings_page_wpdocs .ui-dialog-titlebar-close {
+		border: 0;
+		padding: 0 !important;
+		top: -2px !important;
+		position: absolute !important;
+		background: transparent;
+		cursor: pointer;
+		right:6px;
+	}
+	body.settings_page_wpdocs .ui-dialog-buttonset button {
+		background-color: #fff;
+		border: 1px solid rgba(0,0,0,0.1);
+		border-radius: 4px;
+		padding: 2px 16px;
+		color: rgba(0,0,0,0.8);
+		font-size: 14px;
+	}
+	body.settings_page_wpdocs .ui-dialog-titlebar {
+		font-size: 12px;
+	}
+	
+	body.settings_page_wpdocs .ui-dialog-buttonset button:hover {
+		background-color: #DDD;
+	}
+	#wpdocs_shortcut_dialog{
+		display:none;
+	}
+	.wpdocs_dialog_field {
+		margin: 0 0 10px;
+	}
+	.wpdocs_dialog_field label {
+		font-size: 12px;
+		margin: 0;
+		font-weight: bold;
+	}
+	.wpdocs_dialog_field input[type="text"],
+	.wpdocs_dialog_field select{
+		width:100%;
+		padding:2px;
+		font-size:14px;
+	}
+	.wp-docs-multi-select{
+		padding:10px 0;
+		font-size:12px;
+	}
+	.wp-docs-multi-select a{
+		cursor:pointer;
+	}
+	.wp-docs-multi-select i.fas{
+		color:#0C0;
+		display:none;
+	}
+	.wp-docs-multi-select.selection-enabled i.fas{
+		display:inline-block;
+	}
+	.wp-docs-multi-select.selection-enabled i.far{
+		display:none;
+	}
+	
