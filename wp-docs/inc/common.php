@@ -90,8 +90,10 @@
             
             <h2 class="nav-tab-wrapper">
 
-                <a class="nav-tab nav-tab-active"><?php _e("Directories",'wp-docs'); ?> <i class="fa fa-folder"></i> / <?php _e("Files",'wp-docs'); ?> <i class="fas fa-file-word"></i> <i class="fas fa-file-pdf"></i> <i class="fas fa-file-image"></i> <i class="fas fa-file-archive"></i></a>
-    			<a class="nav-tab float-right"><?php _e("Tools",'wp-docs'); ?> <i class="fas fa-tools"></i></a>
+                <a class="nav-tab nav-tab-active" data-tab="directories"><?php _e("Directories",'wp-docs'); ?> <i class="fa fa-folder"></i> / <?php _e("Files",'wp-docs'); ?> <i class="fas fa-file-word"></i> <i class="fas fa-file-pdf"></i> <i class="fas fa-file-image"></i> <i class="fas fa-file-archive"></i></a>
+    			<a class="nav-tab" data-tab="tools"><?php _e("Tools",'wp-docs'); ?> <i class="fas fa-tools"></i></a>
+                
+                <a class="nav-tab float-right" data-tab="help"><?php _e("Help",'wp-docs'); ?> <i class="fas fa-question-circle"></i></a>
                 
     
                 

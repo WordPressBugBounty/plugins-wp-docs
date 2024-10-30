@@ -578,7 +578,7 @@ if(!empty($all_dirs)){
 	
 </div>
 </div>
-<div class="nav-tab-content hide">
+<div class="nav-tab-content hide" data-content="translate">
 	<div class="translate_wpdocs_urls">
         <textarea id="translate_wpdocs"></textarea>
         <input id="translate_wpdocs_btn" type="button" value="<?php _e('Translate', 'wp-docs'); ?>" />
@@ -586,6 +586,23 @@ if(!empty($all_dirs)){
     </div>
 </div>
 
+
+<div class="nav-tab-content container-fluid hides tab-help" data-content="help">
+    
+        <div class="row mt-3">
+        
+            <ul class="position-relative">
+                <li><a class="btn btn-sm btn-info" href="https://wordpress.org/support/plugin/wp-docs/" target="_blank" aria-label="<?php _e('Open a Ticket on Support Forums', 'wp-docs'); ?> (Opens in a new window)"><?php _e('Open a Ticket on Support Forums', 'wp-docs'); ?> &nbsp;<i class="fas fa-tag"></i></a></li>
+                <li><a class="btn btn-sm btn-warning" href="http://demo.androidbubble.com/contact/" target="_blank" aria-label="<?php _e('Contact Developer', 'wp-docs'); ?> (Opens in a new window)"><?php _e('Contact Developer', 'wp-docs'); ?> &nbsp;<i class="fas fa-headset"></i></a></li>
+                <li><a class="btn btn-sm btn-secondary" href="<?php echo $wpdocs_premium_link; ?>/?help" target="_blank" aria-label="<?php _e('Need Urgent Help?', 'wp-docs'); ?> (Opens in a new window)"><?php _e('Need Urgent Help?', 'wp-docs'); ?> &nbsp;<i class="fas fa-phone"></i></i></a></li>
+                
+               
+                <li><iframe width="560" height="315" src="https://www.youtube.com/embed/k5bZqZ5dW30?t=<?php date('d'); ?>" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></li>
+            </ul>                
+        </div>
+    
+    </div>
+    
 </div>	
 <style type="text/css">
 .woocommerce-message, .update-nag, #message, .notice.notice-error, .error.notice{ display:none; }

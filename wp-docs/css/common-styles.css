@@ -60,7 +60,6 @@
 	font-size:0px; /*100px*/
 	margin-bottom: 15px;
 	min-height: 100px;
-	overflow:hidden;
 }
 
 .wpdocs_folders .wpdocs_list ul li a.file:focus{

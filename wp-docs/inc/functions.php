@@ -683,7 +683,6 @@
 			$file_url = wp_get_attachment_url($item);
 			//pree($file_url);exit;
 			
-			$encrypted = get_post_meta($item, 'encrypted', true);
 			
 			$filename = basename($file_url);
 			$filename = explode('?', $filename);
@@ -718,13 +717,12 @@
 			
 	
 			return array(
-					'file_id' => $item,
+	
 					'file_url' => $file_url,
 					'ext' => $ext,
 					'filename' => $filename,
 					'title' => $filename,
-					'icon_url' => $icon_url,
-					'encrypted' => ($encrypted?true:false)
+					'icon_url' => $icon_url
 			);
 	
 	
@@ -745,16 +743,16 @@
 		$files = sanitize_wpdocs_data($_POST['files']);
 		$files = is_array($files) ? $files : array($files);
 	
-		//delete_post_meta($dir_id, 'wpdocs_items');
-		//pree($files);exit;
-		$files_list = wpdocs_update_files_meta($dir_id, $files);
+	//    delete_post_meta($dir_id, 'wpdocs_items');
+	
+		wpdocs_update_files_meta($dir_id, $files);
 		
 		
 		
 		$ret = '';
 	
 		if(!empty($files)){
-			$files_list = wpdocs_list_added_items($dir_id);//, $files_list);
+			$files_list = wpdocs_list_added_items($dir_id);
 			
 			$ret = $files_list;
 		}
@@ -762,7 +760,7 @@
 		echo $ret;
 		exit;
 	}
-	function wpdocs_list_added_items($dir, $dir_items=array())
+	function wpdocs_list_added_items($dir)
 	{
 	
 		global $wpdocs_options;
@@ -772,10 +770,8 @@
 		$wp_uploads_url = $wp_get_upload_dir['baseurl'];
 	
 	
-		//pree(is_array($dir_items));exit;
-		$wpdocs_items = ((is_array($dir_items) && !empty($dir_items))?$dir_items:wpdocs_added_items($dir)); 
-		//pree($wpdocs_items);exit;
-		
+	
+		$wpdocs_items = wpdocs_added_items($dir); //pree($wpdocs_items);
 		$files_list = array();
 		$pdf_thumb_selected = (array_key_exists('pdf_thumb', $wpdocs_options)?$wpdocs_options['pdf_thumb']:'default');
 	
@@ -1337,17 +1333,13 @@
 														//$class .= 'fa-file';
 													break;
 												}
-												
-												$encrypted_path = wpdocs_encrypted_path($file_id, $encrypted);
-												
-												$href_attrib = (!$encrypted_path?' href="'.$file_url.'" target="_blank" ':' data-hash="'.$encrypted_path.'" ');
 											
 												$file_list_row = '
 	
 																	
 															<div title="'.esc_attr($filename).'" class="col-4 col-md-3 is_file text-center is_shallow" style="cursor: pointer;" data-id="'.$file.'">
 																<figure class="figure file_view p-1">
-																	<a '.$href_attrib.' class="file fv1 '.($encrypted?'encrypted-link':'').'" ><img class="my-3" src="'.$icon_url.'" /></a>
+																	<a href="'.$file_url.'" target="_blank" class="file" ><img class="my-3" src="'.$icon_url.'" /></a>
 																	<figcaption class="figure-caption text-center">'.$title.'</figcaption>
 																</figure>
 															</div>
@@ -1426,17 +1418,13 @@
 														//$class .= 'fa-file';
 													break;
 												}
-												
-												$encrypted_path = wpdocs_encrypted_path($file_id, $encrypted);
-												
-												$href_attrib = (!$encrypted_path?' href="'.$file_url.'" target="_blank" ':' data-hash="'.$encrypted_path.'" ');
 											
 												$file_list_row = '
 	
 																	
 															<div title="'.esc_attr($filename).'" class="col-4 col-md-3 is_file text-center is_deep" style="cursor: pointer;" data-id="'.$file.'">
 																<figure class="figure file_view p-1">
-																	<a '.$href_attrib.' class="file fv2 '.($encrypted?'encrypted-link':'').'" ><img class="my-3" src="'.$icon_url.'" /></a>
+																	<a href="'.$file_url.'" target="_blank" class="file" ><img class="my-3" src="'.$icon_url.'" /></a>
 																	<figcaption class="figure-caption text-center">'.$title.'</figcaption>
 																</figure>
 															</div>
@@ -1522,15 +1510,11 @@
 											
 											
 											if(trim($file_url)){
-												
-												$encrypted_path = wpdocs_encrypted_path($file_id, $encrypted);
-												
-												$href_attrib = (!$encrypted_path?' data-url="'.$file_url.'" target="_blank" ':' data-hash="'.$encrypted_path.'" ');
 											
 												$file_list_row = '
-																<div '.$href_attrib.' title="'.esc_attr($filename).'" class="col-12 file_wrapper is_file '.($encrypted?'encrypted-link':'').'" style="cursor: pointer;" data-id="'.$file.'">
+																<div title="'.esc_attr($filename).'" class="col-12 file_wrapper is_file" style="cursor: pointer;" data-id="'.$file.'">
 																	<figure class="figure file_view p-3">
-																		<a class="file fv3" ><img class="mb-2" src="'.$icon_url.'" style="width: 25px; height: 25px"></a>
+																		<a href="'.$file_url.'" target="_blank" class="file" ><img class="mb-2" src="'.$icon_url.'" style="width: 25px; height: 25px"></a>
 																		<small class="text-center">'.$title.'</small>
 																	</figure>
 																</div>';
@@ -1557,15 +1541,11 @@
 											
 											
 											if(trim($file_url)){
-												
-												$encrypted_path = wpdocs_encrypted_path($file_id, $encrypted);
-												
-												$href_attrib = (!$encrypted_path?' href="'.$file_url.'" target="_blank" ':' data-hash="'.$encrypted_path.'" ');
 											
 												$file_list_row = '
 																<div title="'.esc_attr($filename).'" class="col-12 file_wrapper is_file is_deep" style="cursor: pointer;" data-id="'.$file.'">
 																	<figure class="figure file_view p-3">
-																		<a '.$href_attrib.' class="file fv4 '.($encrypted?'encrypted-link':'').'" ><img class="mb-2" src="'.$icon_url.'" style="width: 25px; height: 25px"></a>
+																		<a href="'.$file_url.'" target="_blank" class="file" ><img class="mb-2" src="'.$icon_url.'" style="width: 25px; height: 25px"></a>
 																		<small class="text-center">'.$title.'</small>
 																	</figure>
 																</div>';
@@ -1714,13 +1694,9 @@
 													//pree($ts);
 													
 													if(trim($icon_url)){
-														
-													$encrypted_path = wpdocs_encrypted_path($file_id, $encrypted);
-												
-													$href_attrib = (!$encrypted_path?' data-url="'.$file_url.'" ':' data-hash="'.$encrypted_path.'" ');	
 													
 													$files_list_row = '
-													<tr '.$href_attrib.' title="'.esc_attr($filename).'" class="file_view file_link is_file '.($encrypted?'encrypted-link':'').'" style="cursor: pointer;" data-id="'.$file.'">
+													<tr title="'.esc_attr($filename).'" data-url="'.$file_url.'" class="file_view file_link is_file" style="cursor: pointer;" data-id="'.$file.'">
 
 														<td>
 
@@ -1775,13 +1751,9 @@
 													//pree($ts);
 													
 													if(trim($icon_url)){
-														
-													$encrypted_path = wpdocs_encrypted_path($file_id, $encrypted);
-												
-													$href_attrib = (!$encrypted_path?' data-url="'.$file_url.'" ':' data-hash="'.$encrypted_path.'" ');	
 													
 													$files_list_row = '
-													<tr '.$href_attrib.' title="'.esc_attr($filename).'" class="file_view file_link is_file is_deep	'.($encrypted?'encrypted-link':'').'" style="cursor: pointer;" data-id="'.$file.'">
+													<tr title="'.esc_attr($filename).'" data-url="'.$file_url.'" class="file_view file_link is_file is_deep" style="cursor: pointer;" data-id="'.$file.'">
 
 														<td>
 
@@ -2055,10 +2027,6 @@
 	if(!function_exists('wpdocs_update_files_meta')){
 
 	    function wpdocs_update_files_meta($dir_id, $files=array()){
-			
-			//pree($files);
-			
-			$files_list = array();
 
             if ($dir_id > 0 && wpdocs_folder_exists($dir_id) && count($files) > 0) {
 
@@ -2102,20 +2070,9 @@
                 //pree($wpdocs_items);
 
                 update_post_meta($dir_id, 'wpdocs_items_by_user', $wpdocs_items_by_user);
-				
 
-               update_post_meta($dir_id, 'wpdocs_items', $wpdocs_items);
-			   
-				if(function_exists('wpd_update_dir_roles_inner')){
-					//pree($dir_id);pree($files);exit;
-					$files_list = wpd_update_dir_roles_inner($dir_id, 'existing', $files);
-				}
-		   
+               return update_post_meta($dir_id, 'wpdocs_items', $wpdocs_items);
             }
-			
-			//pree($files_list);exit;
-			
-			return $files_list;
         }
     }
 
@@ -2140,12 +2097,6 @@
 			$wpdocs_items = array_unique($wpdocs_items);
 
 			//pree($wpdocs_items);
-			
-			if(!empty($files)){
-				foreach($files as $file_id){			
-					update_post_meta($file_id, 'encrypted', false);
-				}
-			}
 
 			update_post_meta($dir_id, 'wpdocs_items', $wpdocs_items);
 		}
@@ -2300,9 +2251,9 @@ if(!function_exists('wpdocs_update_option')){
 							
 					}
 
-					$files_list = wpdocs_update_files_meta($new_dir, $file_id);
+					$update = wpdocs_update_files_meta($new_dir, $file_id);
 					
-					if(is_array($files_list) && !empty($files_list)){//$update === true){
+					if($update === true){
 						$return['dir_move'] = true;
 					}
 
@@ -3175,7 +3126,7 @@ if(!function_exists('wpdocs_add_breadcrumb')){
 							foreach($dir_list as $dir_id){
 								update_post_meta($attachment_id, '_wpdocs_memphis_media_file', true);
 								$wpdocs_imported_files[] = $attachment_id;
-								$files_list = wpdocs_update_files_meta($dir_id, $files);
+								wpdocs_update_files_meta($dir_id, $files);
 							}
 							unset($memphis_files_array[$file_index]);
 							$wpdocs_memphis_list[] = $file_data;
@@ -3566,11 +3517,5 @@ if(!function_exists('wpdocs_add_breadcrumb')){
 	if(!function_exists('wpdoc_humanize')){
 		function wpdoc_humanize($str){
 			return ucwords(str_replace(array('-', '_'), ' ', $str));
-		}
-	}
-	
-	if(!function_exists('wpdocs_encrypted_path')){
-		function wpdocs_encrypted_path($file_id, $encrypted=false){
-			return '';
 		}
 	}

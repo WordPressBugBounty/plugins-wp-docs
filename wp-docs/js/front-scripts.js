@@ -66,8 +66,6 @@ jQuery(document).ready(function($){
 		var parent_container = $(this).parents('div.wpdoc_container:first');
 		var home_id = parent_container.data('home');
 		
-		//console.log('A3');
-		
 		if(linked_url && !linked_id){
 			window.open(linked_url, '_blank').focus();
 			return;
@@ -108,10 +106,9 @@ jQuery(document).ready(function($){
 
 		//if(wpdocs.del_from_front){
 			e.preventDefault();
-			//console.log('A2');
-
-			if(typeof $(this).parent().attr('data-url')!='undefined'){
-				window.open($(this).parent().data('url'), '_blank');
+	
+			if($(this).find('a').length>0){
+				window.open($(this).find('a').attr('href'), '_blank');
 			}
 			
 		//}
@@ -135,7 +132,6 @@ jQuery(document).ready(function($){
 		
 		}else{
 			e.preventDefault();
-			//console.log('A1');
 			if(typeof $(this).data('url')!='undefined' && $(this).data('url')!=''){
 				window.open($(this).data('url'), '_blank');
 			}
@@ -183,15 +179,11 @@ jQuery(document).ready(function($){
 	});
 	
 	$('body').on('click','figure.file_view figcaption', function(e){
-		
-		e.preventDefault();
-		
 		var this_parent = $(this).parents('.wpdoc_container:first');
 		
 		if(this_parent.data('del_from_front')){
 		}else{			
-			//console.log('A');
-			if($(this).parent().find('a').length>0 && typeof $(this).parent().find('a')!='undefined'){
+			if($(this).parent().find('a').length>0){
 				window.open($(this).parent().find('a').attr('href'), '_blank');
 			}	
 		}
