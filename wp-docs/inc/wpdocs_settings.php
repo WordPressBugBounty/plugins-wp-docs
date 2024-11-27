@@ -7,7 +7,7 @@ global $wp_docs_is_memphis, $wpdocs_current_theme;
 //pree($wp_docs_is_memphis);exit;
 if ($wp_docs_is_memphis) {
 
-    $mp_plugin_data = get_plugin_data(MDOCS_PATH . 'memphis-documents.php');
+    $mp_plugin_data = get_plugin_data(MDOCS_PATH . 'memphis-documents.php', true, false);
 	
 
     $wpdocs_show_data = array(

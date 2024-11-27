@@ -4,8 +4,8 @@ Tags: wp docs, memphis-documents-library, documents, library folders, directory
 License: GPL2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires at least: 3.5
-Tested up to: 6.6
-Stable tag: 2.1.7
+Tested up to: 6.7
+Stable tag: 2.1.8
 Requires PHP: 7.0
 A documents management tool for education portals.
 
@@ -136,6 +136,8 @@ Use the browse button to select the plugin zip file that was downloaded, then cl
 20. File description instead of file name.
 
 == Changelog ==
+= 2.1.8 =
+* Notice: Function _load_textdomain_just_in_time was called incorrectly. Translation loading for the wp-docs domain was triggered too early. [27/11/2024][Thanks to Thomas]
 = 2.1.7 =
 * New: Help tab added so users can contact the plugin author for custom help in case they need it. [30/10/2024][Thanks to @damdam38]
 = 2.1.5 =
@@ -350,6 +352,8 @@ Use the browse button to select the plugin zip file that was downloaded, then cl
 * Initial Release of WP Docs
 
 == Upgrade Notice ==
+= 2.1.8 =
+Notice: Function _load_textdomain_just_in_time was called incorrectly. Translation loading for the wp-docs domain was triggered too early.
 = 2.1.7 =
 New: Help tab added so users can contact the plugin author for custom help in case they need it.
 = 2.1.5 =
