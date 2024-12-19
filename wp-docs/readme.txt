@@ -5,7 +5,7 @@ License: GPL2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires at least: 3.5
 Tested up to: 6.7
-Stable tag: 2.2.0
+Stable tag: 2.2.1
 Requires PHP: 7.0
 A documents management tool for education portals.
 
@@ -136,7 +136,7 @@ Use the browse button to select the plugin zip file that was downloaded, then cl
 20. File description instead of file name.
 
 == Changelog ==
-= 2.2.0 =
+= 2.2.1 =
 * Fix: $wpdb->prepare() for every database query that is not completely hard-coded and accepts user-supplied input to prevent SQL injection. [Thanks to Arkadiusz Hydzik / Peter Greaves / Wordfence]
 = 2.1.8 =
 * Notice: Function _load_textdomain_just_in_time was called incorrectly. Translation loading for the wp-docs domain was triggered too early. [27/11/2024][Thanks to Thomas]
@@ -354,7 +354,7 @@ Use the browse button to select the plugin zip file that was downloaded, then cl
 * Initial Release of WP Docs
 
 == Upgrade Notice ==
-= 2.2.0 =
+= 2.2.1 =
 Fix: $wpdb->prepare() for every database query that is not completely hard-coded and accepts user-supplied input to prevent SQL injection.
 = 2.1.8 =
 Notice: Function _load_textdomain_just_in_time was called incorrectly. Translation loading for the wp-docs domain was triggered too early.

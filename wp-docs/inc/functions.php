@@ -4,8 +4,7 @@
 		function wp_docs_get_option_id($option_name){
 			global $wpdb;
 			$option_name = esc_sql( $option_name );
-			$query = $wpdb->prepare("SELECT option_id FROM %s WHERE option_name = '%s'",
-						$wpdb->options,
+			$query = $wpdb->prepare("SELECT option_id FROM $wpdb->options WHERE option_name = %s",
 						$option_name
 					);
 			return $wpdb->get_var($query);
@@ -505,11 +504,8 @@
 			}
 			
 
-			$query_str = $wpdb->prepare("SELECT ID, post_title, post_type, post_content, post_parent, guid FROM %s WHERE post_status='%s' AND post_type IN ('%s') AND post_parent IN ('%s') ORDER BY $orderby $order",
-							$wpdb->posts,
-							$wpdocs_post_status,
-							implode("','", $post_types),
-							implode(',', $ids)
+			$query_str = $wpdb->prepare('SELECT ID, post_title, post_type, post_content, post_parent, guid FROM '.$wpdb->posts.' WHERE post_status=%s AND post_type IN ("'.implode('","', $post_types).'") AND post_parent IN ("'.implode(',', $ids).'") ORDER BY '. $orderby.' '.$order,							
+							$wpdocs_post_status
 						);
 			
 			//pree($query_str);
@@ -1968,11 +1964,9 @@
 			);
 			//pree($my_post);exit;
 			//wp_update_post($my_post);
-			$rename_query = $wpdb->prepare("UPDATE %s SET post_title='%s' WHERE ID='%d' AND post_type IN ('%s') AND post_status='%s'",
-							$wpdb->posts,
+			$rename_query = $wpdb->prepare("UPDATE $wpdb->posts SET post_title=%s WHERE ID=%d AND post_type IN ('".implode("','", $wpdocs_post_types)."') AND post_status=%s",
 							$my_post['post_title'],
-							$dir_id,
-							implode("','", $wpdocs_post_types),
+							$dir_id,							
 							$wpdocs_post_status
 							);
 			//pree($rename_query);exit;
@@ -2717,7 +2711,7 @@ if(!function_exists('wpdocs_add_breadcrumb')){
 				if(isset($_GET['clear'])){
 					global $wpdocs_url, $wpdb, $wpdocs_post_types;
 					update_option('wpdocs_options', array());
-					$wpdb->query($wpdb->prepare("DELETE FROM %s WHERE post_type IN ('%s')", $wpdb->posts, implode("','", $wpdocs_post_types)));
+					$wpdb->query($wpdb->prepare("DELETE FROM $wpdb->posts WHERE post_type IN ('".implode("','", $wpdocs_post_types)."')"));
 					wp_redirect(admin_url('options-general.php?page=wpdocs'));exit;
 				}
 				
@@ -2897,7 +2891,7 @@ if(!function_exists('wpdocs_add_breadcrumb')){
 			global $wpdb;
 			$name = esc_sql('Memphis Documents');
 
-			$query = $wpdb->prepare("SELECT max(ID) FROM %s WHERE post_title LIKE '%%s%'", $wpdb->posts, $name);
+			$query = $wpdb->prepare("SELECT max(ID) FROM $wpdb->posts WHERE post_title LIKE '%$name%'");
 
 			$result = $wpdb->get_var($query);			
 			if($result){
@@ -2930,7 +2924,7 @@ if(!function_exists('wpdocs_add_breadcrumb')){
 
 			$dir_id = 0;
 
-			$query = $wpdb->prepare("SELECT max(ID) FROM %s WHERE post_title LIKE '%%s%'", $wpdb->posts, $name);
+			$query = $wpdb->prepare("SELECT max(ID) FROM $wpdb->posts WHERE post_title LIKE '%$name%'");
 			
 			$result = $wpdb->get_var($query);			
 			if($result){
