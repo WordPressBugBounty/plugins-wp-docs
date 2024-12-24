@@ -74,7 +74,7 @@ jQuery(document).ready(function($){
 			});
 		});
 		var rename_to = prompt(wpdocs_ajax_object.rename_confirm, folder_name);
-		
+		rename_to = rename_to.replace(/(<([^>]+)>)/ig,"");
 		if($.trim(rename_to)!=''){
 			var data = {
 				'action': 'wpdocs_update_folder',
