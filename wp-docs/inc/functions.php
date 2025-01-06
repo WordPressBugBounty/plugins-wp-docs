@@ -627,7 +627,7 @@
 	{
 		$nonce = sanitize_wpdocs_data(wp_unslash($_POST['nonce']));
 		
-		if ( ! wp_verify_nonce( $nonce, 'wpdocs_update_options_nonce' ) )
+		if (!empty($_POST) && isset($_POST['nonce']) && ! wp_verify_nonce( $nonce, 'wpdocs_update_options_nonce' ) )
 			die (__("Sorry, your nonce did not verify.", 'wp-docs'));
 	
 		$post_parent = sanitize_wpdocs_data($_POST['parent_dir']);
@@ -739,7 +739,7 @@
 
 		$nonce = sanitize_wpdocs_data(wp_unslash($_POST['nonce']));
 		
-		if ( ! wp_verify_nonce( $nonce, 'wpdocs_update_options_nonce' ) )
+		if (!empty($_POST) && isset($_POST['nonce']) &&  ! wp_verify_nonce( $nonce, 'wpdocs_update_options_nonce' ) )
 		die (__("Sorry, your nonce did not verify.", 'wp-docs'));
 		
 				
@@ -1945,7 +1945,7 @@
 
 		$nonce = sanitize_wpdocs_data(wp_unslash($_POST['nonce']));
 		
-		 if ( ! wp_verify_nonce( $nonce, 'wpdocs_update_options_nonce' ) )
+		 if (!empty($_POST) && isset($_POST['nonce']) && ! wp_verify_nonce( $nonce, 'wpdocs_update_options_nonce' ) )
 			die (__("Sorry, your nonce did not verify.", 'wp-docs'));
 				
 		$dir_id = sanitize_wpdocs_data($_POST['dir_id']);
@@ -1990,7 +1990,7 @@
 	{
 		$nonce = sanitize_wpdocs_data(wp_unslash($_POST['nonce']));
 		
-		 if ( ! wp_verify_nonce( $nonce, 'wpdocs_update_options_nonce' ) )
+		 if (!empty($_POST) && isset($_POST['nonce']) && ! wp_verify_nonce( $nonce, 'wpdocs_update_options_nonce' ) )
 			die (__("Sorry, your nonce did not verify.", 'wp-docs'));
 				
 		$dir_id = sanitize_wpdocs_data($_POST['dir_id']);
@@ -2142,7 +2142,7 @@ if(!function_exists('wpdocs_update_option')){
                 'dir_move' => false,
             );
 
-            if ( ! wp_verify_nonce( $nonce, 'wpdocs_update_options_nonce' ) )
+            if (!empty($_POST) && isset($_POST['nonce']) && ! wp_verify_nonce( $nonce, 'wpdocs_update_options_nonce' ) )
                 die (__("Sorry, your nonce did not verify.", 'wp-docs'));
 
             if(isset($_POST['wpdocs_options'])){
@@ -2411,7 +2411,7 @@ if(!function_exists('wpdocs_add_breadcrumb')){
 			
 			$nonce = sanitize_wpdocs_data(wp_unslash($_POST['nonce']));
 			
-			if ( ! wp_verify_nonce( $nonce, 'wpdocs_update_options_nonce' ) )
+			if (!empty($_POST) && isset($_POST['nonce']) && ! wp_verify_nonce( $nonce, 'wpdocs_update_options_nonce' ) )
 			die (__("Sorry, your nonce did not verify.", 'wp-docs'));			
 			
 			if(isset($_POST['update_view'])){

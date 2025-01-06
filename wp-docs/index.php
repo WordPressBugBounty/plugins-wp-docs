@@ -4,7 +4,7 @@ Plugin Name: WP Docs
 Plugin URI: http://androidbubble.com/blog/wp-docs
 Description: A documents management tool for education portals.
 Author: Fahad Mahmood
-Version: 2.2.2
+Version: 2.2.3
 Text Domain: wp-docs
 Domain Path: /languages
 Author URI: https://profiles.wordpress.org/fahadmahmood/

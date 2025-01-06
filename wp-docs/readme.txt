@@ -4,8 +4,8 @@ Tags: wp docs, memphis-documents-library, documents, library folders, directory
 License: GPL2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires at least: 3.5
-Tested up to: 6.7
-Stable tag: 2.2.2
+Tested up to: 6.8
+Stable tag: 2.2.3
 Requires PHP: 7.0
 A documents management tool for education portals.
 
