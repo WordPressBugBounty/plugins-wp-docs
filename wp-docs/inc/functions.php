@@ -912,11 +912,7 @@
 		
 		if ( 
 			!empty($_POST) && !wp_doing_ajax() && 
-			(
-				! isset( $_POST['wpdocs_front_list_nonce'] ) 
-				
-				|| 
-				
+			(				
 				(isset( $_POST['wpdocs_front_list_nonce'] ) && ! wp_verify_nonce( sanitize_wpdocs_data(wp_unslash($_POST['wpdocs_front_list_nonce_field'])), 'wpdocs_front_list_nonce' ) )
 			)
 		) {
@@ -2837,28 +2833,32 @@ if(!function_exists('wpdocs_add_breadcrumb')){
 				'status' => false,
 			);
 			
-			if (!isset($_POST['wp_docs_nonce']) || !wp_verify_nonce( sanitize_wpdocs_data(wp_unslash($_POST['wp_docs_nonce'])), 'wpdocs_update_options_nonce' ) ){
+			if(!empty($_POST) && isset($_POST['wp_docs_nonce'])){
 				
-				wp_die(__("Sorry, your nonce did not verify.", 'wp-docs'));
-
-			}else{
-
-				$dir_progress = wp_docs_import_memphis_directories();
-				$file_progress = wp_docs_memphis_import_files();
-
-				$result_array['status'] = ($dir_progress || $file_progress);
-
-				if($result_array['status']){
-					wp_docs_whiteflag_memphis_htaccess();
-				}
-				
-				if(!$dir_progress && !$file_progress){
+				if (!wp_verify_nonce( sanitize_wpdocs_data(wp_unslash($_POST['wp_docs_nonce'])), 'wpdocs_update_options_nonce' ) ){
 					
-					$result_array['remarks'] = __('No directories and files found.', 'wp-docs');
+					wp_die(__("Sorry, your nonce did not verify.", 'wp-docs'));
+	
+				}else{
+	
+					$dir_progress = wp_docs_import_memphis_directories();
+					$file_progress = wp_docs_memphis_import_files();
+	
+					$result_array['status'] = ($dir_progress || $file_progress);
+	
+					if($result_array['status']){
+						wp_docs_whiteflag_memphis_htaccess();
+					}
+					
+					if(!$dir_progress && !$file_progress){
+						
+						$result_array['remarks'] = __('No directories and files found.', 'wp-docs');
+					}
+	
 				}
 
 			}
-
+			
 			wp_send_json($result_array);
 		}
 	}
@@ -2872,14 +2872,18 @@ if(!function_exists('wpdocs_add_breadcrumb')){
 				'status' => false,
 			);
 			
-			if (!isset($_POST['wp_docs_nonce']) || !wp_verify_nonce( sanitize_wpdocs_data(wp_unslash($_POST['wp_docs_nonce'])), 'wpdocs_update_options_nonce' ) ){
+			if(!empty($_POST) && isset($_POST['wp_docs_nonce'])){
 				
-				wp_die(__("Sorry, your nonce did not verify.", 'wp-docs'));
-
-			}else{
-
-				wp_docs_rollback_memphis_import();
-				$result_array['status'] = true;
+				if (!wp_verify_nonce( sanitize_wpdocs_data(wp_unslash($_POST['wp_docs_nonce'])), 'wpdocs_update_options_nonce' ) ){
+					
+					wp_die(__("Sorry, your nonce did not verify.", 'wp-docs'));
+	
+				}else{
+	
+					wp_docs_rollback_memphis_import();
+					$result_array['status'] = true;
+				}
+				
 			}
 
 			wp_send_json($result_array);
