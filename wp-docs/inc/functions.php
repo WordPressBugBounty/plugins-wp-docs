@@ -767,7 +767,7 @@
 	function wpdocs_list_added_items($dir)
 	{
 	
-		global $wpdocs_options;
+		global $wpdocs_options, $icon_sub_path, $wpdocs_url;
 	
 		$wp_get_upload_dir = wp_get_upload_dir();
 		$wp_uploads_path = $wp_get_upload_dir['basedir'];
@@ -818,12 +818,24 @@
 									$file_url_thumb = str_replace('.pdf', '.png', strtolower($item_data['file_url']));
 									$file_url_thumb_path = str_replace($wp_uploads_url, $wp_uploads_path, $file_url_thumb);
 									
-									if(!file_exists($file_url_thumb_path)){
+									if(!file_exists($file_url_thumb_path) && class_exists('imagick')){
 									
-										$im = new imagick($item_data['file_url']);
-										$im->setIteratorIndex(0);
-										$im->setImageFormat('png');
-										$im->writeImage($file_url_thumb_path);
+										try {
+											$im = new imagick($item_data['file_url']);
+											$im->setIteratorIndex(0);
+											$im->setImageFormat('png');
+											$im->writeImage($file_url_thumb_path);
+										} catch (ImagickException $e) {
+											
+											if(defined('WP_DEBUG') && WP_DEBUG && defined('WP_DEBUG_LOG') && WP_DEBUG_LOG){
+												error_log("Imagick error: " . $e->getMessage());
+												error_log('file_url: '.$item_data['file_url']);
+												error_log('file_url_thumb_path: '.$file_url_thumb_path);
+											}
+											
+											$file_url_thumb = $wpdocs_url.$icon_sub_path.$ext.'.png';
+										}
+										
 										
 									}
 									
@@ -929,7 +941,7 @@
 		   				
 		//pree($atts);
 		ob_start();
-		global $wpdocs_url, $wpdocs_options, $wpdocs_pro, $wpdocs_post_types, $pdf_thumb_selected;
+		global $wpdocs_url, $wpdocs_options, $wpdocs_pro, $wpdocs_post_types, $pdf_thumb_selected, $icon_sub_path;
 		
 		$pdf_thumb_selected = (array_key_exists('pdf_thumb', $wpdocs_options)?$wpdocs_options['pdf_thumb']:'default');
 		
@@ -1312,14 +1324,27 @@
 																	$file_url_thumb = str_replace('.pdf', '.png', strtolower($file_data['file_url']));
 																	$file_url_thumb_path = str_replace($wp_uploads_url, $wp_uploads_path, $file_url_thumb);
 																	
-																	if(!file_exists($file_url_thumb_path)){
-																	
-																		$im = new imagick($file_data['file_url']);
-																		$im->setIteratorIndex(0);
-																		$im->setImageFormat('png');
-																		$im->writeImage($file_url_thumb_path);
+																	if(!file_exists($file_url_thumb_path) && class_exists('imagick')){
+									
+																		try {
+																			$im = new imagick($item_data['file_url']);
+																			$im->setIteratorIndex(0);
+																			$im->setImageFormat('png');
+																			$im->writeImage($file_url_thumb_path);
+																		} catch (ImagickException $e) {
+																			
+																			if(defined('WP_DEBUG') && WP_DEBUG && defined('WP_DEBUG_LOG') && WP_DEBUG_LOG){
+																				error_log("Imagick error: " . $e->getMessage());
+																				error_log('file_url: '.$item_data['file_url']);
+																				error_log('file_url_thumb_path: '.$file_url_thumb_path);
+																			}
+																			
+																			$file_url_thumb = $wpdocs_url.$icon_sub_path.$ext.'.png';
+																		}
+																		
 																		
 																	}
+																	
 																	
 																	$icon_url = $file_url_thumb;
 												
