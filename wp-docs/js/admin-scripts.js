@@ -55,41 +55,50 @@ jQuery(document).ready(function($){
 	});
 	
 	
-	$('body').on('click', '.wpdocs_list ul li.ab-dir > a.dtitle', function(){
-		var obj = $(this);
-		var id = obj.parent().data('id');
-		var resource_id = obj.parent().data('resource');
-		var html_str = $.parseHTML(obj.html());
-		var folder_name = '';
-		$.each( html_str, function( i, el ){
-			$.each(el, function(k,v){
-				switch(k){
-				
-					case 'wholeText':
-						folder_name = v;
-						
-					break;
-					
-				}
-			});
+	$('body').on('click', '.wpdocs_list ul li.ab-dir > a.dtitle', function () {
+		const obj = $(this);
+		const id = obj.parent().data('id');
+		const resource_id = obj.parent().data('resource');
+	
+		// Get plain folder name from HTML
+		let html_str = $.parseHTML(obj.html());
+		let folder_name = '';
+	
+		$.each(html_str, function (i, el) {
+			if (el.wholeText) {
+				folder_name = el.wholeText;
+			}
 		});
-		var rename_to = prompt(wpdocs_ajax_object.rename_confirm, folder_name);
-		rename_to = rename_to.replace(/(<([^>]+)>)/ig,"");
-		if($.trim(rename_to)!=''){
-			var data = {
-				'action': 'wpdocs_update_folder',
-				'dir_id': id,
-				'resource_id': resource_id,
-				'new_name': rename_to,
-				'nonce': wpdocs_ajax_object.nonce
-			};
-			// We can also pass the url value separately from ajaxurl for front end AJAX implementations
-			$.post(wpdocs_ajax_object.ajax_url, data, function(response) {
-				//window.location.reload();
-				obj.html(rename_to);
-			});			
+	
+		let rename_to = prompt(wpdocs_ajax_object.rename_confirm, folder_name);
+	
+		// Cancelled or empty input
+		if (!rename_to || $.trim(rename_to) === '') {
+			return;
 		}
+	
+		// Strip HTML tags
+		rename_to = rename_to.replace(/(<([^>]+)>)/gi, "");
+	
+		const data = {
+			action: 'wpdocs_update_folder',
+			dir_id: id,
+			resource_id: resource_id,
+			new_name: rename_to,
+			nonce: wpdocs_ajax_object.nonce
+		};
+	
+		$.post(wpdocs_ajax_object.ajax_url, data, function (response) {
+			if (response.success && response.data && response.data.msg) {
+				// Update folder name in DOM
+				obj.text(rename_to);
+				alert(response.data.msg);
+			} else {
+				alert(response.data?.msg || 'Rename failed.');
+			}
+		});
 	});
+
 
 	
 	$('body').on('click', '.wpdocs_list ul li.ab-dir a.wpd-edit', function(){

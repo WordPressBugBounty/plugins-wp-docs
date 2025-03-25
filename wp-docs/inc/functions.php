@@ -105,7 +105,8 @@
                     'empty_settings' => empty($wpdocs_options),
 					'wc_os_pg' => (isset($_GET['pg'])?esc_attr($_GET['pg']):'0'),
 					'wc_os_tab' => (isset($_GET['t'])?esc_attr($_GET['t']):'0'),
-					'all_dirs' => $dir_id_to_titles
+					'all_dirs' => $dir_id_to_titles,
+					'rename_confirm' => __('Please enter new folder name:', 'wp-docs'),
 					
 				)
 			);
@@ -1961,49 +1962,58 @@
 
 	
 	add_action('wp_ajax_wpdocs_update_folder', 'wpdocs_update_folder');
-	function wpdocs_update_folder()
-	{
-
-		$nonce = sanitize_wpdocs_data(wp_unslash($_POST['nonce']));
+	
+	function wpdocs_update_folder() {
+	
 		
-		 if (!empty($_POST) && isset($_POST['nonce']) && ! wp_verify_nonce( $nonce, 'wpdocs_update_options_nonce' ) )
-			die (__("Sorry, your nonce did not verify.", 'wp-docs'));
-				
-		$dir_id = sanitize_wpdocs_data($_POST['dir_id']);
-		$dir_id_compare = base64_decode(sanitize_wpdocs_data($_POST['resource_id']));
-		//pree($dir_id_compare.'=='.$dir_id.' - '.wpdocs_folder_exists($dir_id));exit;
-		
-		$ret = array('msg'=>'');
-		
-		if ($dir_id>0 && $dir_id_compare==$dir_id && wpdocs_folder_exists($dir_id)) {
-			
-			global $wpdb, $wpdocs_post_types, $wpdocs_post_status;
-			
-			$my_post = array(
-				'post_title'    => htmlspecialchars_decode(sanitize_wpdocs_data($_POST['new_name'])),
-				'ID'  => $dir_id,
-			);
-			//pree($my_post);exit;
-			//wp_update_post($my_post);
-			$rename_query = $wpdb->prepare("UPDATE $wpdb->posts SET post_title=%s WHERE ID=%d AND post_type IN ('".implode("','", $wpdocs_post_types)."') AND post_status=%s",
-							$my_post['post_title'],
-							$dir_id,							
-							$wpdocs_post_status
-							);
-			//pree($rename_query);exit;
-			$updated = $wpdb->query($rename_query);
-			
-			
-			if($updated){
-				$ret['msg'] = __("Successfully updated.", 'wp-docs');
-			}else{
-				$ret['msg'] = __("No changes are made, input seems the same as before.", 'wp-docs');
-			}
+		if ( ! current_user_can('edit_posts') ) {
+			wp_send_json_error(['msg' => __('Unauthorized access.', 'wp-docs')]);
 		}
-
-		echo wp_json_encode($ret);
-		exit;
+	
+	
+		if (
+			empty($_POST['nonce']) ||
+			! wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'])), 'wpdocs_update_options_nonce')
+		) {
+			wp_send_json_error(['msg' => __('Sorry, your nonce did not verify.', 'wp-docs')]);
+		}
+	
+		
+		$dir_id         = absint($_POST['dir_id'] ?? 0);
+		$resource_id    = base64_decode(sanitize_text_field($_POST['resource_id'] ?? ''));
+		$new_name       = sanitize_text_field($_POST['new_name'] ?? '');
+	
+		$ret = ['msg' => ''];
+	
+		if ( $dir_id > 0 && $resource_id == $dir_id && wpdocs_folder_exists($dir_id) ) {
+	
+			global $wpdb, $wpdocs_post_types, $wpdocs_post_status;
+	
+			$updated = $wpdb->query(
+				$wpdb->prepare(
+					"UPDATE $wpdb->posts 
+					 SET post_title = %s 
+					 WHERE ID = %d 
+					   AND post_type IN ('" . implode("','", array_map('esc_sql', $wpdocs_post_types)) . "') 
+					   AND post_status = %s",
+					htmlspecialchars_decode($new_name),
+					$dir_id,
+					$wpdocs_post_status
+				)
+			);
+	
+			if ( $updated ) {
+				$ret['msg'] = __('Successfully updated.', 'wp-docs');
+			} else {
+				$ret['msg'] = __('No changes were made. Input seems the same as before.', 'wp-docs');
+			}
+		} else {
+			$ret['msg'] = __('Invalid folder ID or resource mismatch.', 'wp-docs');
+		}
+	
+		wp_send_json_success($ret);
 	}
+
 	
 	add_action('wp_ajax_wpdocs_delete_folder', 'wpdocs_delete_folder');
 
