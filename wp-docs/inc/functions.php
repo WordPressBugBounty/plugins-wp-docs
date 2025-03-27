@@ -3112,29 +3112,32 @@ if(!function_exists('wpdocs_add_breadcrumb')){
 		}
 	}
 
+	
 	if(!function_exists('wp_docs_relocate_memphis_meta')){
 		function wp_docs_relocate_memphis_meta($dir_id){
 			global $wpdocs_imported_files, $wpdocs_imported_folder;
+	
+			// Ensure arrays are initialized properly before using them
+			$wpdocs_imported_files = (is_array($wpdocs_imported_files) ? $wpdocs_imported_files : array());
+			$wpdocs_imported_folder = (is_array($wpdocs_imported_folder) ? $wpdocs_imported_folder : array());
+	
 			$wpdocs_items = get_post_meta($dir_id, 'wpdocs_items', true);
 			$wpdocs_items = (is_array($wpdocs_items) ? $wpdocs_items : array());
 			$dir_slug = get_post_meta($dir_id, '_wpdocs_memphis_slug', true);
-			
-			$wpdocs_imported_files = (is_array($wpdocs_imported_files)?$wpdocs_imported_files:array());
-
+	
 			if(!empty($wpdocs_items)){
-
 				$wpdocs_imported_files = array_diff($wpdocs_imported_files, $wpdocs_items);
 			}
-
+	
 			if($dir_slug){
 				$wpdocs_imported_folder = array_diff($wpdocs_imported_folder, array($dir_slug));
 			}
-
+	
 			update_option('wpdocs_imported_folder', $wpdocs_imported_folder);
 			update_option('wpdocs_imported_files', $wpdocs_imported_files);				
-
-		};
+		}
 	}
+
 
 	if(!function_exists('wp_docs_memphis_import_files')){
 		function wp_docs_memphis_import_files(){

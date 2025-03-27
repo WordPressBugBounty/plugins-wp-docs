@@ -5,7 +5,7 @@ License: GPL2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires at least: 3.5
 Tested up to: 6.8
-Stable tag: 2.2.7
+Stable tag: 2.2.8
 Requires PHP: 7.0
 A documents management tool for education portals.
 
@@ -136,6 +136,8 @@ Use the browse button to select the plugin zip file that was downloaded, then cl
 20. File description instead of file name.
 
 == Changelog ==
+= 2.2.8 =
+* Fix: Deleting unused folder in WP Docs. [Thanks to Jordan Wells / gclna.org]
 = 2.2.5 =
 * Fix: Imagick related exceptions added. [Thanks to James Oliver / Paluma]
 = 2.2.2 =
@@ -358,6 +360,8 @@ Use the browse button to select the plugin zip file that was downloaded, then cl
 * Initial Release of WP Docs
 
 == Upgrade Notice ==
+= 2.2.8 =
+Fix: Deleting unused folder in WP Docs.
 = 2.2.5 =
 Fix: Imagick related exceptions added.
 = 2.2.2 =
