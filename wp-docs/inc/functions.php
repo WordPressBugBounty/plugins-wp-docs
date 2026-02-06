@@ -626,6 +626,11 @@
 	
 	function wpdocs_create_folder()
 	{
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( __("Unauthorized user", 'wp-docs') );
+			wp_die();
+		}
+		
 		$nonce = sanitize_wpdocs_data(wp_unslash($_POST['nonce']));
 		
 		if (!empty($_POST) && isset($_POST['nonce']) && ! wp_verify_nonce( $nonce, 'wpdocs_update_options_nonce' ) )
@@ -2019,6 +2024,12 @@
 
 	function wpdocs_delete_folder()
 	{
+		
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( __( 'Unauthorized user', 'wp-docs' ) );
+			wp_die();
+		}
+				
 		$nonce = sanitize_wpdocs_data(wp_unslash($_POST['nonce']));
 		
 		 if (!empty($_POST) && isset($_POST['nonce']) && ! wp_verify_nonce( $nonce, 'wpdocs_update_options_nonce' ) )
