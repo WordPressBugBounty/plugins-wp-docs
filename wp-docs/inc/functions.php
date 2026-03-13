@@ -84,6 +84,7 @@
 				'wpdocs_ajax_object',
 				array(
 					'ajax_url' => admin_url('admin-ajax.php'),
+					'nonce' => wp_create_nonce('wpdocs_update_options_nonce'),
 					'url' => admin_url('options-general.php?page=wpdocs'),
 					'wpdocs_pro' => $wpdocs_pro,
 					'wpdocs_delete_msg' => __('Do you want to delete this directory and data as well?', 'wp-docs'),
@@ -101,7 +102,7 @@
 					'select_role_str' =>  __('Select roles to allow upload', 'wp-docs'),
 					'rename_confirm' => __('Do you want to rename this directory?', 'wp-docs'),
 					'reset_confirm' => __('Do you want to reset all settings and clear directories?', 'wp-docs'),					
-					'nonce' => wp_create_nonce('wpdocs_update_options_nonce'),
+					
                     'empty_settings' => empty($wpdocs_options),
 					'wc_os_pg' => (isset($_GET['pg'])?esc_attr($_GET['pg']):'0'),
 					'wc_os_tab' => (isset($_GET['t'])?esc_attr($_GET['t']):'0'),
@@ -421,6 +422,8 @@
 			
 			$params_array = array(
 					'dir_id' => $dir_id,
+					
+					'nonce' => wp_create_nonce('wpdocs_update_options_nonce'),
 					'parent_dir' => get_permalink($post->ID).'/?dir=',
 					'wpdocs_pro' => $wpdocs_pro,
 					'details_view_sorting' => $details_view_sorting,
@@ -438,7 +441,6 @@
                     'is_ajax' => $is_ajax,
 					'is_ajax_url' => $is_ajax_url,
 					'del_from_front' => array_key_exists('del_from_front', $wpdocs_options),
-					'nonce' => wp_create_nonce('wpdocs_update_options_nonce'),
 					'restriction_load' => isset($_GET['wpdocs_restriction']),
 					'restriction_id' => isset($_GET['wpdocs_restriction']) ? $_GET['wpdocs_restriction'] : '',
 					'restriction_container' => isset($_GET['wpdocs_container']) ? $_GET['wpdocs_container'] : '',
@@ -646,7 +648,27 @@
 		
 		$is_shortcut = ($list['type']==$wpdocs_post_types['shortcut']);
 		
-		echo '<li class="ab-dir ab-new" data-id="'.$dir_id.'" data-resource='.base64_encode($dir_id).'" data-linked="'.$list['content'].'" data-guid="'.($is_shortcut?$list['guid']:'').'"><a class="folder fa fa-folder"></a><a class="dtitle" title="'.__('Click here to rename', 'wp-docs').'">'.__('New Folder', 'wp-docs').'</a><span class="wpd_action_span"><a class="wpd-edit" title="'.__('Click here to edit', 'wp-docs').'"></a><span class="wpd_action_span_inner"><a class="wpd-copy" title="'.__('Click here to copy', 'wp-docs').'"></a><a class="wpd-move" title="'.__('Click here to move', 'wp-docs').'"></a></span><a class="wpd-trash" title="'.__('Click here to delete', 'wp-docs').'"></a></span></li>';
+		echo '<li class="ab-dir ab-new" 
+			data-id="' . esc_attr($dir_id) . '" 
+			data-resource="' . esc_attr(base64_encode($dir_id)) . '" 
+			data-linked="' . esc_attr($list['content']) . '" 
+			data-guid="' . ($is_shortcut ? esc_attr($list['guid']) : '') . '">
+			
+			<a class="folder fa fa-folder"></a>
+			
+			<a class="dtitle" title="' . esc_attr(__('Click here to rename', 'wp-docs')) . '">
+				' . esc_html__('New Folder', 'wp-docs') . '
+			</a>
+			
+			<span class="wpd_action_span">
+				<a class="wpd-edit" title="' . esc_attr(__('Click here to edit', 'wp-docs')) . '"></a>
+				<span class="wpd_action_span_inner">
+					<a class="wpd-copy" title="' . esc_attr(__('Click here to copy', 'wp-docs')) . '"></a>
+					<a class="wpd-move" title="' . esc_attr(__('Click here to move', 'wp-docs')) . '"></a>
+				</span>
+				<a class="wpd-trash" title="' . esc_attr(__('Click here to delete', 'wp-docs')) . '"></a>
+			</span>
+		</li>';
 	
 		exit;
 	}
@@ -725,14 +747,12 @@
 				
 				
 			
-	
 			return array(
-	
-					'file_url' => $file_url,
-					'ext' => $ext,
-					'filename' => $filename,
-					'title' => $filename,
-					'icon_url' => $icon_url
+				'file_url' => esc_url($file_url),
+				'ext'      => esc_attr($ext),
+				'filename' => esc_attr($filename),
+				'title'    => esc_html($filename),
+				'icon_url' => esc_url($icon_url)
 			);
 	
 	
@@ -797,7 +817,7 @@
 				//pree($item_data);
 				//pree($wp_uploads_path);exit;
 	
-				$icon_str = '<img src="'.$icon_url.'" style="">';
+				$icon_str = '<img src="' . esc_url($icon_url) . '" style="" alt="' . esc_attr($title) . '">';
 				
 				switch ($ext) {
 					case 'png':
@@ -845,7 +865,7 @@
 										
 									}
 									
-									$icon_str = '<img src="'.$file_url_thumb.'" style="">';
+									$icon_str = '<img src="' . esc_url( $file_url_thumb ) . '" style="" alt="' . esc_attr( $title ) . '">';
 				
 							}
 					
@@ -858,19 +878,18 @@
 					break;
 				}
 				$class = '';
-				$files_list[$title] = '<li data-id="' . $item . '" data-dir="'.$dir. '" title="'.esc_attr($filename).'">
-									<a href="' . $file_url . '" target="_blank" class="file  ' . $class . '"> '.$icon_str.' </a>
-									<a class="ftitle" title="' . $title . '">' . $title . '</a>
-									<span class="wpd_action_span">
-									<a href="upload.php?item='.$item.'" target="_blank" class="wpd-edit" title="'.__('Click here to edit', 'wp-docs').'"></a>
-									<span class="wpd_action_span_inner">
-										<a class="wpd-copy" title="'.__('Click here to copy', 'wp-docs').'"></a>
-										<a class="wpd-move" title="'.__('Click here to move', 'wp-docs').'"></a>
-									</span>
-									
-									<a href="upload.php?search='.esc_attr($filename).'" target="_blank" class="wpd-trash" title="'.__('Click here to delete', 'wp-docs').'"></a>
-									</span>
-								</li>';
+				$files_list[ $title ] = '<li data-id="' . esc_attr( $item ) . '" data-dir="' . esc_attr( $dir ) . '" title="' . esc_attr( $filename ) . '">
+    <a href="' . esc_url( $file_url ) . '" target="_blank" class="file ' . esc_attr( $class ) . '"> ' . $icon_str . ' </a>
+    <a class="ftitle" title="' . esc_attr( $title ) . '">' . esc_html( $title ) . '</a>
+    <span class="wpd_action_span">
+        <a href="' . esc_url( 'upload.php?item=' . $item ) . '" target="_blank" class="wpd-edit" title="' . esc_attr__( 'Click here to edit', 'wp-docs' ) . '"></a>
+        <span class="wpd_action_span_inner">
+            <a class="wpd-copy" title="' . esc_attr__( 'Click here to copy', 'wp-docs' ) . '"></a>
+            <a class="wpd-move" title="' . esc_attr__( 'Click here to move', 'wp-docs' ) . '"></a>
+        </span>
+        <a href="' . esc_url( 'upload.php?search=' . rawurlencode( $filename ) ) . '" target="_blank" class="wpd-trash" title="' . esc_attr__( 'Click here to delete', 'wp-docs' ) . '"></a>
+    </span>
+</li>';
 			}
 		}
 	
@@ -1141,10 +1160,17 @@
 ?>
 
 	
-			<div class="container-fluid wpdoc_container" data-dir_restrictions = "<?php echo wpdocs_get_dir_restrictions($dir, 'base64'); ?>" data-del_from_front="<?php echo $is_del_from_front; ?>" data-dir="<?php echo $dir; ?>" data-home="<?php echo $home_id; ?>">
-				<?php wp_nonce_field( 'wpdocs_front_list_nonce', 'wpdocs_front_list_nonce_field' ); ?>
-				<input type="hidden" class="wpd_home_id" value="<?php echo esc_html($home_id); ?>" />
-				<input type="hidden" class="wpd_del_file_id" value="" />
+<div class="container-fluid wpdoc_container" 
+     data-dir_restrictions="<?php echo esc_attr( wpdocs_get_dir_restrictions( $dir, 'base64' ) ); ?>" 
+     data-del_from_front="<?php echo esc_attr( $is_del_from_front ); ?>" 
+     data-dir="<?php echo esc_attr( $dir ); ?>" 
+     data-home="<?php echo esc_attr( $home_id ); ?>">
+     
+    <?php wp_nonce_field( 'wpdocs_front_list_nonce', 'wpdocs_front_list_nonce_field' ); ?>
+    
+    <input type="hidden" class="wpd_home_id" value="<?php echo esc_attr( $home_id ); ?>" />
+    <input type="hidden" class="wpd_del_file_id" value="" />
+
 <?php
 
 				$wpdocs_view = array_key_exists($home_id, $wpdocs_view) ? $wpdocs_view[$home_id] : trim($default_view);
@@ -1158,7 +1184,11 @@
 
                             <?php if (!empty($breadcrumb_array)) { ?>
 
-                                <li class="breadcrumb-item bread_home_url"><a class="wpd_bread_item" href="<?php echo $get_permalink ?>" data-id="0"><?php _e('Home', 'wp-docs'); ?></a></li>
+                                <li class="breadcrumb-item bread_home_url">
+    <a class="wpd_bread_item" href="<?php echo esc_url($get_permalink); ?>" data-id="0">
+        <?php echo esc_html__('Home', 'wp-docs'); ?>
+    </a>
+</li>
 							<?php
 								
 									foreach (array_reverse($breadcrumb_array) as $bread_key => $bread_value) {
@@ -1166,7 +1196,7 @@
 										$page = '';
 										$permalink = stripos($get_permalink, '?');
 										$permalink_c = ($permalink!='' && is_numeric($permalink) && $permalink>=0);
-										$link = '<a class="wpd_bread_item" href="' . $get_permalink . ($permalink_c?'&':'?').'dir=' . $bread_value . '" data-id="'.$bread_value.'" >' . get_the_title($bread_value) . '</a>';
+						$link = '<a class="wpd_bread_item" href="' . esc_url($get_permalink . ($permalink_c ? '&' : '?') . 'dir=' . $bread_value) . '" data-id="' . esc_attr($bread_value) . '">' . (get_the_title($bread_value)) . '</a>';
 										if ($bread_value == 0) {
 											continue;
 										}
@@ -1178,7 +1208,9 @@
 	
 	
 										?>
-									<li class="breadcrumb-item <?php echo $active ?>" aria-current="<?php echo $page; ?>"><?php echo $link; ?></li>
+									<li class="breadcrumb-item <?php echo esc_attr($active); ?>" aria-current="<?php echo esc_attr($page); ?>">
+    <?php echo wp_kses_post($link); ?>
+</li>
 
                                     <?php } ?>
 							<?php
@@ -1189,14 +1221,19 @@
 						</ol>
 
                         <?php if($is_del_from_front):?>
-
-                            <i style="opacity: 0.5;" class="fa fa-trash fa-1x position-absolute wp_docs_del_file <?php echo (is_user_logged_in()?'logged_in':'logged_out'); ?>" title="<?php _e('Click here to delete selected files', 'wp-docs'); ?>"></i>
+<i style="opacity: 0.5;" 
+   class="fa fa-trash fa-1x position-absolute wp_docs_del_file <?php echo esc_attr(is_user_logged_in() ? 'logged_in' : 'logged_out'); ?>" 
+   title="<?php echo esc_attr__('Click here to delete selected files', 'wp-docs'); ?>">
+</i>
 
                         <?php endif; ?>
 
 						<?php if($wpdocs_pro && $dir != 0 && wpdocs_can_current_user_upload_file($dir) && $is_file):?>
 	
-                            <i class="fa fa-upload fa-1x wpdocs-front-add-media position-absolute" id="wpdocs_front_file_add_<?php echo $dir; ?>" title="<?php _e('Click here to add files', 'wp-docs'); ?>"></i>
+<i class="fa fa-upload fa-1x wpdocs-front-add-media position-absolute" 
+   id="wpdocs_front_file_add_<?php echo esc_attr( $dir ); ?>" 
+   title="<?php echo esc_attr__( 'Click here to add files', 'wp-docs' ); ?>">
+</i>
 	
 						<?php endif; ?>
 					</nav>
@@ -1231,8 +1268,7 @@
 */					
 ?>			
 					
-					<?php echo $warning_msg?'<div class="card-body">'.$warning_msg.'</div>':''; ?>
-                    
+			<?php echo $warning_msg ? '<div class="card-body">' . wp_kses_post( $warning_msg ) . '</div>' : ''; ?>     
                     <?php if($is_searchbox || $ajax_based_deep_search): ?>
                     <div class="wpdocs-searchbox">
                     	<input type="text" placeholder="<?php echo ($ajax_based_deep_search?__('Type here to search...', 'wp-docs'):__('Type here to filter...', 'wp-docs')); ?>" />
@@ -1256,12 +1292,20 @@
 										$is_shortcut = ($list['type']==$wpdocs_post_types['shortcut']);
 ?>
 	
-									<div class="col-4 col-md-3 file_wrapper is_dir" style="cursor: pointer;" data-id="<?php echo $list['id']; ?>" data-resource="<?php echo base64_encode($list['id']); ?>" data-linked="<?php echo $list['content']; ?>" data-guid="<?php echo $is_shortcut?$list['link']:''; ?>">
-										<figure class="figure file_view p-0">									
-											<span class="fa fa-folder text-warning" style="<?php echo $customize_icon_size; ?>"></span>
-											<figcaption class="figure-caption text-center" style="<?php echo $customize_font_size; ?>"><?php echo $list['title']; ?></figcaption>
-										</figure>
-									</div>
+<div class="col-4 col-md-3 file_wrapper is_dir" style="cursor: pointer;"
+     data-id="<?php echo esc_attr($list['id']); ?>"
+     data-resource="<?php echo esc_attr(base64_encode($list['id'])); ?>"
+     data-linked="<?php echo esc_attr($list['content']); ?>"
+     data-guid="<?php echo esc_attr($is_shortcut ? $list['link'] : ''); ?>">
+
+    <figure class="figure file_view p-0">									
+        <span class="fa fa-folder text-warning" style="<?php echo esc_attr($customize_icon_size); ?>"></span>
+        <figcaption class="figure-caption text-center" style="<?php echo esc_attr($customize_font_size); ?>">
+            <?php echo esc_html($list['title']); ?>
+        </figcaption>
+    </figure>
+
+</div>
 <?php
 										}
 									} else {
@@ -1280,12 +1324,21 @@
 												$is_shortcut = ($list['type']==$wpdocs_post_types['shortcut']);
 												
 ?>
-									<div class="col-4 col-md-3 file_wrapper is_dir is_deep" style="cursor: pointer;" data-id="<?php echo $list['id']; ?>" data-resource="<?php echo base64_encode($list['id']); ?>" data-linked="<?php echo $list['content']; ?>" data-guid="<?php echo $is_shortcut?$list['guid']:''; ?>">
-										<figure class="figure file_view p-0">									
-											<span class="fa fa-folder text-warning" style="<?php echo $customize_icon_size; ?>"></span>
-											<figcaption class="figure-caption text-center" style="<?php echo $customize_font_size; ?>"><?php echo $list['title']; ?></figcaption>
-										</figure>
-									</div>
+<div class="col-4 col-md-3 file_wrapper is_dir is_deep" style="cursor: pointer;"
+    data-id="<?php echo esc_attr($list['id']); ?>"
+    data-resource="<?php echo esc_attr(base64_encode($list['id'])); ?>"
+    data-linked="<?php echo esc_attr($list['content']); ?>"
+    data-guid="<?php echo esc_attr($is_shortcut ? $list['guid'] : ''); ?>">
+
+    <figure class="figure file_view p-0">									
+        <span class="fa fa-folder text-warning" style="<?php echo esc_attr($customize_icon_size); ?>"></span>
+
+        <figcaption class="figure-caption text-center" style="<?php echo esc_attr($customize_font_size); ?>">
+            <?php echo esc_html($list['title']); ?>
+        </figcaption>
+    </figure>
+
+</div>
 <?php
 											}
 										}
@@ -1366,17 +1419,17 @@
 												}
 											
 												$file_list_row = '
-	
-																	
-															<div title="'.esc_attr($filename).'" class="col-4 col-md-3 is_file text-center is_shallow" style="cursor: pointer;" data-id="'.$file.'">
-																<figure class="figure file_view p-1">
-																	<a href="'.$file_url.'" target="_blank" class="file" ><img class="my-3" src="'.$icon_url.'" /></a>
-																	<figcaption class="figure-caption text-center">'.$title.'</figcaption>
-																</figure>
-															</div>
-															
-															
-															';
+
+<div title="'.esc_attr($filename).'" class="col-4 col-md-3 is_file text-center is_shallow" style="cursor: pointer;" data-id="'.esc_attr($file).'">
+    <figure class="figure file_view p-1">
+        <a href="'.esc_url($file_url).'" target="_blank" class="file">
+            <img class="my-3" src="'.esc_url($icon_url).'" />
+        </a>
+        <figcaption class="figure-caption text-center">'.esc_html($title).'</figcaption>
+    </figure>
+</div>
+
+';
 												$list = wpdocs_list_population($list, $file_data, $file_list_row, $default_orderby);				
 									
 											}
@@ -1451,17 +1504,17 @@
 												}
 											
 												$file_list_row = '
-	
-																	
-															<div title="'.esc_attr($filename).'" class="col-4 col-md-3 is_file text-center is_deep" style="cursor: pointer;" data-id="'.$file.'">
-																<figure class="figure file_view p-1">
-																	<a href="'.$file_url.'" target="_blank" class="file" ><img class="my-3" src="'.$icon_url.'" /></a>
-																	<figcaption class="figure-caption text-center">'.$title.'</figcaption>
-																</figure>
-															</div>
-															
-															
-															';
+
+<div title="'.esc_attr($filename).'" class="col-4 col-md-3 is_file text-center is_deep" style="cursor: pointer;" data-id="'.esc_attr($file).'">
+    <figure class="figure file_view p-1">
+        <a href="'.esc_url($file_url).'" target="_blank" class="file">
+            <img class="my-3" src="'.esc_url($icon_url).'" />
+        </a>
+        <figcaption class="figure-caption text-center">'.esc_html($title).'</figcaption>
+    </figure>
+</div>
+
+';
 												$list = wpdocs_list_population($list, $file_data, $file_list_row, $default_orderby);				
 									
 											}
@@ -1498,10 +1551,14 @@
 										$is_shortcut = ($list['type']==$wpdocs_post_types['shortcut']);
 										?>
 	
-									<div class="col-12 file_wrapper is_dir" style="cursor: pointer;" data-id="<?php echo $list['id']; ?>" data-resource="<?php echo base64_encode($list['id']); ?>" data-linked="<?php echo $list['content']; ?>" data-guid="<?php echo $is_shortcut?$list['link']:''; ?>">
+<div class="col-12 file_wrapper is_dir" style="cursor: pointer;"
+    data-id="<?php echo esc_attr($list['id']); ?>"
+    data-resource="<?php echo esc_attr(base64_encode($list['id'])); ?>"
+    data-linked="<?php echo esc_attr($list['content']); ?>"
+    data-guid="<?php echo esc_attr($is_shortcut ? $list['link'] : ''); ?>">
 										<figure class="figure file_view p-2">
 											<span class="fa fa-folder text-warning" style="font-size:25px"></span>
-											<small class="text-center"><?php echo $list['title']; ?></small>
+											<small class="text-center"><?php echo esc_html($list['title']); ?></small>
 										</figure>
 									</div>
 								<?php
@@ -1520,10 +1577,14 @@
 												$is_shortcut = ($list['type']==$wpdocs_post_types['shortcut']);
 												
 ?>
-									<div class="col-12 file_wrapper is_dir is_deep" style="cursor: pointer;" data-id="<?php echo $list['id']; ?>" data-resource="<?php echo base64_encode($list['id']); ?>" data-linked="<?php echo $list['content']; ?>" data-guid="<?php echo $is_shortcut?$list['guid']:''; ?>">
+									<div class="col-12 file_wrapper is_dir is_deep" style="cursor: pointer;"
+    data-id="<?php echo esc_attr($list['id']); ?>"
+    data-resource="<?php echo esc_attr(base64_encode($list['id'])); ?>"
+    data-linked="<?php echo esc_attr($list['content']); ?>"
+    data-guid="<?php echo esc_attr($is_shortcut ? $list['guid'] : ''); ?>">
 										<figure class="figure file_view p-2">
 											<span class="fa fa-folder text-warning" style="font-size:25px"></span>
-											<small class="text-center"><?php echo $list['title']; ?></small>
+											<small class="text-center"><?php echo esc_html($list['title']); ?></small>
 										</figure>
 									</div>
 <?php
@@ -1621,12 +1682,25 @@
 								<table class="table">
 									<thead class="thead">
 										<tr>
-											<th><?php _e('Name', 'wp-docs'); ?> <?php echo $d_v_caret; ?></th>
-	<?php if($details_date_created): ?>		<th><?php _e('Created Date', 'wp-docs'); ?> <?php echo $d_v_caret; ?></th><?php endif; ?>
-	<?php if($details_date): ?>				<th><?php _e('Modified Date', 'wp-docs'); ?> <?php echo $d_v_caret; ?></th><?php endif; ?>
-	<?php if($details_type): ?>				<th><?php _e('Type', 'wp-docs'); ?> <?php echo $d_v_caret; ?></th><?php endif; ?>
-	<?php if($details_size): ?>				<th><?php _e('Size', 'wp-docs'); ?> <?php echo $d_v_caret; ?></th><?php endif; ?>    
-										</tr>
+    <th><?php esc_html_e('Name', 'wp-docs'); ?> <?php echo wp_kses_post($d_v_caret); ?></th>
+
+<?php if ( $details_date_created ) : ?>
+    <th><?php esc_html_e('Created Date', 'wp-docs'); ?> <?php echo wp_kses_post($d_v_caret); ?></th>
+<?php endif; ?>
+
+<?php if ( $details_date ) : ?>
+    <th><?php esc_html_e('Modified Date', 'wp-docs'); ?> <?php echo wp_kses_post($d_v_caret); ?></th>
+<?php endif; ?>
+
+<?php if ( $details_type ) : ?>
+    <th><?php esc_html_e('Type', 'wp-docs'); ?> <?php echo wp_kses_post($d_v_caret); ?></th>
+<?php endif; ?>
+
+<?php if ( $details_size ) : ?>
+    <th><?php esc_html_e('Size', 'wp-docs'); ?> <?php echo wp_kses_post($d_v_caret); ?></th>
+<?php endif; ?>
+
+</tr>
 									</thead>
 									<?php
 										$no_dir_found = false;
@@ -1635,11 +1709,11 @@
 											foreach ($wpdocs_list as $list) {
 												$is_shortcut = ($list['type']==$wpdocs_post_types['shortcut']);
 												?>
-											<tr title="<?php echo $list['id']; ?>" class="file_wrapper file_view is_dir" style="cursor: pointer;" data-id="<?php echo $list['id']; ?>" data-resource="<?php echo base64_encode($list['id']); ?>" data-linked="<?php echo $list['content']; ?>" data-guid="<?php echo $is_shortcut?$list['link']:''; ?>">
+											<tr title="<?php echo esc_attr($list['id']); ?>" class="file_wrapper file_view is_dir" style="cursor: pointer;" data-id="<?php echo esc_attr($list['id']); ?>" data-resource="<?php echo esc_attr(base64_encode($list['id'])); ?>" data-linked="<?php echo esc_attr($list['content']); ?>" data-guid="<?php echo $is_shortcut?esc_url($list['link']):''; ?>">
 												<td>
 													<figure class="figure ">
 														<span class="fa fa-folder text-warning" style="font-size:25px"></span>
-														<small class="text-center mb-1"><?php echo $list['title']; ?></small>
+														<small class="text-center mb-1"><?php echo esc_html($list['title']); ?></small>
 													</figure>
 												</td>
 												
@@ -1679,11 +1753,11 @@
 												$is_shortcut = ($list['type']==$wpdocs_post_types['shortcut']);
 												
 ?>
-									<tr title="<?php echo $list['id']; ?>" class="file_wrapper file_view is_dir is_deep" style="cursor: pointer;" data-id="<?php echo $list['id']; ?>" data-resource="<?php echo base64_encode($list['id']); ?>" data-linked="<?php echo $list['content']; ?>" data-guid="<?php echo $is_shortcut?$list['guid']:''; ?>">
+									<tr title="<?php echo esc_attr($list['id']); ?>" class="file_wrapper file_view is_dir is_deep" style="cursor: pointer;" data-id="<?php echo esc_attr($list['id']); ?>" data-resource="<?php echo esc_attr(base64_encode($list['id'])); ?>" data-linked="<?php echo esc_attr($list['content']); ?>" data-guid="<?php echo $is_shortcut?esc_attr($list['guid']):''; ?>">
 												<td>
 													<figure class="figure ">
 														<span class="fa fa-folder text-warning" style="font-size:25px"></span>
-														<small class="text-center mb-1"><?php echo $list['title']; ?></small>
+														<small class="text-center mb-1"><?php echo esc_html($list['title']); ?></small>
 													</figure>
 												</td>
 												
@@ -1852,7 +1926,7 @@
 	<?php if($is_bootstrap): ?>
 				<div class="wpdocs_loader wpd_modal d-none">
 					<div class="modal_content">
-						<img src="<?php echo $wpdocs_url.'img/loader.gif' ?>" width="50px" height="50px">
+						<img src="<?php echo esc_url($wpdocs_url.'img/loader.gif'); ?>" width="50px" height="50px">
 					</div>
 				</div>
 	<?php endif; ?>            
@@ -2171,150 +2245,155 @@ add_action('wp_ajax_wpdocs_update_option', 'wpdocs_update_option');
 
 if(!function_exists('wpdocs_update_option')){
     function wpdocs_update_option(){
+		
+		if ( ! current_user_can('manage_options') ) {
+			wp_send_json_error('Insufficient permissions.');
+		}
+
+		if (
+			! isset($_POST['wpdocs_update_option_nonce']) ||
+			! wp_verify_nonce($_POST['wpdocs_update_option_nonce'], 'wpdocs_update_options_nonce')
+		) {
+			wp_send_json_error('Invalid nonce '.$_POST['wpdocs_update_option_nonce']);
+		} else {
+			//wp_send_json_success('Nonce valid!');
+		}
+
+		$return = array(
+
+			'option_update' => false,
+			'dir_move' => false,
+		);
+
+	  
+
+		if(isset($_POST['wpdocs_options'])){
+
+			$wpdocs_options = isset($_POST['wpdocs_options']) ? sanitize_wpdocs_data($_POST['wpdocs_options']) : array();
+
+			$wpdocs_dir_id = isset($_POST['wpdocs_dir_id']) ? sanitize_wpdocs_data($_POST['wpdocs_dir_id']) : 0;
 
 
-
-        if(isset($_POST['wpdocs_update_option_nonce'])){
-
-            $nonce = sanitize_wpdocs_data(wp_unslash($_POST['wpdocs_update_option_nonce']));
-
-            $return = array(
-
-                'option_update' => false,
-                'dir_move' => false,
-            );
-
-            if (!empty($_POST) && isset($_POST['nonce']) && ! wp_verify_nonce( $nonce, 'wpdocs_update_options_nonce' ) )
-                die (__("Sorry, your nonce did not verify.", 'wp-docs'));
-
-            if(isset($_POST['wpdocs_options'])){
-
-                $wpdocs_options = isset($_POST['wpdocs_options']) ? sanitize_wpdocs_data($_POST['wpdocs_options']) : array();
-
-				$wpdocs_dir_id = isset($_POST['wpdocs_dir_id']) ? sanitize_wpdocs_data($_POST['wpdocs_dir_id']) : 0;
+			$sanitized_option = sanitize_wpdocs_data($wpdocs_options);
+			$sanitized_option['allowed_role'] = $sanitized_option['allowed_role'] !== 'empty' ? $sanitized_option['allowed_role'] : array();
 
 
-                $sanitized_option = sanitize_wpdocs_data($wpdocs_options);
-                $sanitized_option['allowed_role'] = $sanitized_option['allowed_role'] !== 'empty' ? $sanitized_option['allowed_role'] : array();
+			if($wpdocs_dir_id == 0){
 
+				$update = update_option('wpdocs_options', $sanitized_option);
 
-				if($wpdocs_dir_id == 0){
+			}else{
 
-					$update = update_option('wpdocs_options', $sanitized_option);
+				$update = update_post_meta($wpdocs_dir_id, '_wpdocs_dir_options', $sanitized_option);
+				$child_dir_list = wpdoc_get_dir_children($wpdocs_dir_id);
+				if(!empty($child_dir_list)){
+					foreach ($child_dir_list as $child_dir) {
 
-				}else{
+						$update = update_post_meta($child_dir, '_wpdocs_dir_options', $sanitized_option);
 
-					$update = update_post_meta($wpdocs_dir_id, '_wpdocs_dir_options', $sanitized_option);
-					$child_dir_list = wpdoc_get_dir_children($wpdocs_dir_id);
-					if(!empty($child_dir_list)){
-						foreach ($child_dir_list as $child_dir) {
-
-							$update = update_post_meta($child_dir, '_wpdocs_dir_options', $sanitized_option);
-
-							# code...
-						}
+						# code...
 					}
-
-					
-
 				}
-            }
 
-
-
-            if(isset($_POST['wpdocs_move_selected_dir'])){
-
-                $wpdocs_move_selected_dir = sanitize_wpdocs_data($_POST['wpdocs_move_selected_dir']);
-				$action_type = $wpdocs_move_selected_dir['action_type'];
 				
 
-                $is_file = array_key_exists('is_file', $wpdocs_move_selected_dir) ? $wpdocs_move_selected_dir['is_file']: false;
-                $is_file = $is_file == 'false' ? false: true;
+			}
+		}
 
 
-                if(!$is_file && array_key_exists('dir_selected', $wpdocs_move_selected_dir) &&
-                    array_key_exists('dir_id', $wpdocs_move_selected_dir)){
+
+		if(isset($_POST['wpdocs_move_selected_dir'])){
+
+			$wpdocs_move_selected_dir = sanitize_wpdocs_data($_POST['wpdocs_move_selected_dir']);
+			$action_type = $wpdocs_move_selected_dir['action_type'];
+			
+
+			$is_file = array_key_exists('is_file', $wpdocs_move_selected_dir) ? $wpdocs_move_selected_dir['is_file']: false;
+			$is_file = $is_file == 'false' ? false: true;
+
+
+			if(!$is_file && array_key_exists('dir_selected', $wpdocs_move_selected_dir) &&
+				array_key_exists('dir_id', $wpdocs_move_selected_dir)){
+					
+				switch($action_type){
+					default:
+					case 'move':
+					
+	
+						$update = wp_update_post(
+							array(
+								'ID' => $wpdocs_move_selected_dir['dir_selected'],
+								'post_parent' => $wpdocs_move_selected_dir['dir_id']
+							)
+						);
 						
-					switch($action_type){
-						default:
-						case 'move':
+						if($update == $wpdocs_move_selected_dir['dir_selected']){
+							$return['dir_move'] = true;
+						}
 						
-		
-							$update = wp_update_post(
-								array(
-									'ID' => $wpdocs_move_selected_dir['dir_selected'],
-									'post_parent' => $wpdocs_move_selected_dir['dir_id']
-								)
-							);
+					break;
+					
+					case 'copy':
+						$existing_dir = get_post($wpdocs_move_selected_dir['dir_selected']);
+						$existing_dir = (is_object($existing_dir)?(array)$existing_dir:array());
+						if(!empty($existing_dir) && array_key_exists('ID', $existing_dir) && function_exists('wpdocs_recursive_copy_folder')){
 							
-							if($update == $wpdocs_move_selected_dir['dir_selected']){
-								$return['dir_move'] = true;
-							}
+							wpdocs_recursive_copy_folder($wpdocs_move_selected_dir['dir_id'], $existing_dir);
 							
-						break;
+							$return['dir_move'] = true;
+							
+						}
 						
-						case 'copy':
-							$existing_dir = get_post($wpdocs_move_selected_dir['dir_selected']);
-							$existing_dir = (is_object($existing_dir)?(array)$existing_dir:array());
-							if(!empty($existing_dir) && array_key_exists('ID', $existing_dir) && function_exists('wpdocs_recursive_copy_folder')){
-								
-								wpdocs_recursive_copy_folder($wpdocs_move_selected_dir['dir_id'], $existing_dir);
-								
-								$return['dir_move'] = true;
-								
-							}
-							
-							
-						break;
-					}
-                   
-					
-					
-                }
-				//exit;
-
-                if($is_file){
-
-                    $file_id = $wpdocs_move_selected_dir['files'];
-                    
-					$current_dir = $wpdocs_move_selected_dir['file_dir'];
-					
-                    $new_dir = $wpdocs_move_selected_dir['dir_id'];
-					
-                    $files =  wpdocs_added_items($current_dir);
-					
-                    $file_id = is_array($file_id) ? $file_id : array($file_id);
-                    $files = array_diff($files, $file_id);
-					
-					
-					switch($action_type){
-						default:
-						case 'move':
-								
-							update_post_meta($current_dir, 'wpdocs_items', $files);
-							
-						break;
 						
-						case 'copy':
-							
-						break;
-							
-					}
+					break;
+				}
+			   
+				
+				
+			}
+			//exit;
 
-					$update = wpdocs_update_files_meta($new_dir, $file_id);
+			if($is_file){
+
+				$file_id = $wpdocs_move_selected_dir['files'];
+				
+				$current_dir = $wpdocs_move_selected_dir['file_dir'];
+				
+				$new_dir = $wpdocs_move_selected_dir['dir_id'];
+				
+				$files =  wpdocs_added_items($current_dir);
+				
+				$file_id = is_array($file_id) ? $file_id : array($file_id);
+				$files = array_diff($files, $file_id);
+				
+				
+				switch($action_type){
+					default:
+					case 'move':
+							
+						update_post_meta($current_dir, 'wpdocs_items', $files);
+						
+					break;
 					
-					if($update === true){
-						$return['dir_move'] = true;
-					}
+					case 'copy':
+						
+					break;
+						
+				}
 
-                }
-            }
+				$update = wpdocs_update_files_meta($new_dir, $file_id);
+				
+				if($update === true){
+					$return['dir_move'] = true;
+				}
 
-            echo  wp_json_encode($return);
+			}
+		}
 
-        }
+		echo  wp_json_encode($return);
 
-        wp_die();
+
+		wp_die();
 
     }
 }
@@ -2373,7 +2452,7 @@ if(!function_exists('wpdocs_dir_list_option')){
                 if(!array_key_exists('id', $wp_dir)) continue;
                 $wpdocs_list_child = wpdocs_list($wp_dir['id']);
 
-                $option .= '<option value="'.$wp_dir['id'].'" data-parent="'.$dir.'">'.str_repeat(str_replace(' ', '&nbsp;', $str), $level).$wp_dir['title'].'</option>';
+                $option .= '<option value="'.esc_attr($wp_dir['id']).'" data-parent="'.esc_attr($dir).'">'.str_repeat(str_replace(' ', '&nbsp;', $str), $level).esc_html($wp_dir['title']).'</option>';
 
 
                 if(!empty($wpdocs_list_child)){
@@ -2409,7 +2488,7 @@ if(!function_exists('wpdocs_add_breadcrumb')){
         <nav aria-label="breadcrumb" class="wpdocs-nav">
             <ol class="breadcrumb bg-light" style="border-bottom:1px solid #dee2e6;border-radius: 0;">
 
-                <li class="breadcrumb-item bread_home_url"><a class="wpd_bread_item" href="<?php echo $get_permalink ?>" data-id="0"><?php _e('Home', 'wp-docs'); ?></a></li>
+                <li class="breadcrumb-item bread_home_url"><a class="wpd_bread_item" href="<?php echo esc_url($get_permalink); ?>" data-id="0"><?php _e('Home', 'wp-docs'); ?></a></li>
                 <?php
                 
                     foreach (array_reverse($breadcrumb_array) as $bread_key => $bread_value) {
@@ -2428,7 +2507,7 @@ if(!function_exists('wpdocs_add_breadcrumb')){
 
 
                         ?>
-                        <li class="breadcrumb-item <?php echo $active ?>" aria-current="<?php echo $page; ?>"><?php echo $link ?></li>
+                        <li class="breadcrumb-item <?php echo esc_attr($active); ?>" aria-current="<?php echo esc_attr($page); ?>"><?php echo ($link); ?></li>
 
                         <?php
                     }
@@ -3368,13 +3447,13 @@ if(!function_exists('wpdocs_add_breadcrumb')){
 			
 			$breadcrumb = get_the_title($dir);
 			?>
-			<small class="alert alert-success d-block"><i class="fas fa-chevron-right"></i> <?php echo $breadcrumb; ?></small>
+			<small class="alert alert-success d-block"><i class="fas fa-chevron-right"></i> <?php echo esc_html($breadcrumb); ?></small>
 			<?php			
 	
 		}
 		?>
 		<label for="wpdocs_options_file">
-            <input <?php checked($is_file); ?> type="checkbox" class="<?php echo $dir_option_class; ?>" name="wpdocs_options[file_upload]" value="file_upload" id="wpdocs_options_file"  />
+            <input <?php checked($is_file); ?> type="checkbox" class="<?php echo esc_attr($dir_option_class); ?>" name="wpdocs_options[file_upload]" value="file_upload" id="wpdocs_options_file"  />
             <?php echo __('File Upload Front-end', 'wp-docs'); ?> <small><?php echo $wpdocs_pro?__('(Optional)', 'wp-docs'):__('(Premium)', 'wp-docs'); ?></small> <i title="<?php echo __('This icon will appear on front-end for users', 'wp-docs'); ?>" class="fa fa-upload" style="color:#ffc107"></i>
             <a href="https://www.youtube.com/embed/flFmqpJCwYk" target="_blank"><?php echo __('Video Tutorial', 'wp-docs'); ?></a>
         </label>
@@ -3384,14 +3463,14 @@ if(!function_exists('wpdocs_add_breadcrumb')){
         <ul class="ml-4 <?php echo $is_file ? '' : 'd-none'?>">
             <li>
                 <label for="wpdocs_options_current_user_files">
-                    <input class="<?php echo $dir_option_class; ?>" <?php checked($is_file && $is_current_user_files); ?> type="checkbox" name="wpdocs_options[current_user_files]" value="current_user_files" id="wpdocs_options_current_user_files"  />
+                    <input class="<?php echo esc_attr($dir_option_class); ?>" <?php checked($is_file && $is_current_user_files); ?> type="checkbox" name="wpdocs_options[current_user_files]" value="current_user_files" id="wpdocs_options_current_user_files"  />
                     <?php echo __('Do not make files public uploaded by users', 'wp-docs'); ?> <small><?php echo $wpdocs_pro?__('(Optional)', 'wp-docs'):__('(Premium)', 'wp-docs'); ?></small>
                 </label>
             </li>
 
             <li>
                 <label for="wpdocs_options_del_from_front">
-                    <input class="<?php echo $dir_option_class; ?>" <?php checked($is_file && $is_del_from_front); ?> type="checkbox" name="wpdocs_options[del_from_front]" value="del_from_front" id="wpdocs_options_del_from_front"  />
+                    <input class="<?php echo esc_attr($dir_option_class); ?>" <?php checked($is_file && $is_del_from_front); ?> type="checkbox" name="wpdocs_options[del_from_front]" value="del_from_front" id="wpdocs_options_del_from_front"  />
                     <?php echo __('User can delete the files from front-end?', 'wp-docs'); ?> <small><?php echo $wpdocs_pro?__('(Optional)', 'wp-docs'):__('(Premium)', 'wp-docs'); ?></small> <i class="fas fa-trash-alt" style="color:#ffc107"></i>
                 </label>
             </li>
@@ -3403,7 +3482,7 @@ if(!function_exists('wpdocs_add_breadcrumb')){
 
 
 
-                <select class="wpdocs_options_allowed_role <?php echo $dir_option_class; ?>" name="wpdocs_options[allowed_role]" data-name="allowed_role" id="wpdocs_options_allowed_role" multiple placeholder="<?php echo __('Select roles to allow upload', 'wp-docs'); ?>">
+                <select class="wpdocs_options_allowed_role <?php echo esc_attr($dir_option_class); ?>" name="wpdocs_options[allowed_role]" data-name="allowed_role" id="wpdocs_options_allowed_role" multiple placeholder="<?php echo __('Select roles to allow upload', 'wp-docs'); ?>">
 
                     <?php echo wpdocs_get_user_roles_options($allowed_role) ?>
 
@@ -3416,7 +3495,7 @@ if(!function_exists('wpdocs_add_breadcrumb')){
                 <label for="wpdocs_options_allowed_ext">
                     <?php echo __('Allowed File Types', 'wp-docs'); ?> <?php echo ($wpdocs_pro?'':'<small>'.__('(Premium)', 'wp-docs').'</small> '); ?> <i class="fas fa-photo-video" style="color:#ffc107"></i>
                 </label>
-                <input  type="text" class="form-control <?php echo $dir_option_class; ?>" name="wpdocs_options[allowed_ext]" data-name="allowed_ext" value="<?php echo $allowed_ext; ?>" id="wpdocs_options_allowed_ext" title="<?php _e('Leave blank if you want to allow all type of files', 'wp-docs'); ?>" placeholder="<?php echo $default_ext; ?>" />
+                <input  type="text" class="form-control <?php echo esc_attr($dir_option_class); ?>" name="wpdocs_options[allowed_ext]" data-name="allowed_ext" value="<?php echo esc_attr($allowed_ext); ?>" id="wpdocs_options_allowed_ext" title="<?php _e('Leave blank if you want to allow all type of files', 'wp-docs'); ?>" placeholder="<?php echo esc_attr($default_ext); ?>" />
 
             </li>
 

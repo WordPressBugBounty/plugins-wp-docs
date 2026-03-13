@@ -112,7 +112,7 @@ if ($wp_docs_is_memphis) {
 $all_dirs = wpdocs_list('', 'post_title', 'ASC', 'smart', array('shortcut'));
 ?>
 <div class="wrap wpdocs-wrapper">
-<span style="float:right; color:orange; font-size:12px; margin:0 20px 0 0;"><?php echo $wpdocs_current_theme; ?></span>    
+<span style="float:right; color:orange; font-size:12px; margin:0 20px 0 0;"><?php echo esc_html($wpdocs_current_theme); ?></span>    
 <div id="wpdocs_shortcut_dialog">
 <div class="wpdocs_dialog_field">
 <label><?php _e('Label/Caption', 'wp-docs'); ?>:</label> <input data-dir="" id="wpdocs_shortcut_name" type="text" value="" name="wpdocs_shortcut_name" />
@@ -125,7 +125,7 @@ $all_dirs = wpdocs_list('', 'post_title', 'ASC', 'smart', array('shortcut'));
 if(!empty($all_dirs)){
 	foreach($all_dirs as $all_dir){
 ?>
-<option value="<?php echo $all_dir['id']; ?>"><?php echo $all_dir['title']; ?> ID: <?php echo $all_dir['id']; ?></option>
+<option value="<?php echo esc_attr($all_dir['id']); ?>"><?php echo esc_html($all_dir['title']); ?> ID: <?php echo esc_html($all_dir['id']); ?></option>
 <?php		
 	}
 }
@@ -212,10 +212,10 @@ if(!empty($all_dirs)){
 <div class="wpdocs_toolbar">
 <ul><li><a class="back-folder fa fa-hand-o-left" title="<?php _e('Click here to go back', 'wp-docs'); ?>" data-parent="<?php echo wpdocs_parent_folder($dir); ?>" data-id="<?php echo ($dir); ?>"></a></li>
 <?php if($dir>0): ?>
-<li><a class="new-file" data-id="<?php echo $dir; ?>" id="wpcos_new_file"><i class="fa fa-plus-circle"></i><?php _e('Add Files', 'wp-docs'); ?></a></li>
+<li><a class="new-file" data-id="<?php echo esc_attr($dir); ?>" id="wpcos_new_file"><i class="fa fa-plus-circle"></i><?php _e('Add Files', 'wp-docs'); ?></a></li>
 <?php endif; ?>
-<li><a title="<?php _e('New folder', 'wp-docs'); ?>" class="new-folder" data-id="<?php echo $dir; ?>"><?php _e('New folder', 'wp-docs'); ?></a></li>
-<li><a title="<?php echo ($wpdocs_pro?__('New Shortcut', 'wp-docs'):__('Premium Feature', 'wp-docs')); ?>" class="new-shortcut" data-id="<?php echo $dir; ?>"><?php _e('New Shortcut', 'wp-docs'); ?></a></li>
+<li><a title="<?php _e('New folder', 'wp-docs'); ?>" class="new-folder" data-id="<?php echo esc_attr($dir); ?>"><?php _e('New folder', 'wp-docs'); ?></a></li>
+<li><a title="<?php echo ($wpdocs_pro?__('New Shortcut', 'wp-docs'):__('Premium Feature', 'wp-docs')); ?>" class="new-shortcut" data-id="<?php echo esc_attr($dir); ?>"><?php _e('New Shortcut', 'wp-docs'); ?></a></li>
 <li class="wpdocs_move_folder_to" >
 
     <select title="<?php _e('Move selected folder to..', 'wp-docs'); ?>">
@@ -251,7 +251,7 @@ if(!empty($all_dirs)){
 		
 
 ?>
-	<li title="<?php echo ($is_shortcut?($list['content']?__('Shortcut to', 'wp-docs').' '.'ID: '.$list['content']:''):'ID: '.$list['id']); ?>" class="<?php echo ($is_shortcut?'ab-short':'ab-dir'); ?>" data-id="<?php echo $list['id']; ?>" data-resource="<?php echo base64_encode($list['id']); ?>" data-linked="<?php echo $list['content']; ?>" data-guid="<?php echo $is_shortcut?$list['link']:''; ?>"><a class="folder fa fa-folder"></a><a class="dtitle" title="<?php _e('Click here to rename', 'wp-docs'); ?>"><?php echo ($list['title']?esc_html($list['title']):'&nbsp;'); ?></a><?php echo '<span class="wpd_action_span"><a class="wpd-edit" title="'.__('Click here to edit', 'wp-docs').'"></a><span class="wpd_action_span_inner"><a class="wpd-copy" title="'.__('Click here to copy', 'wp-docs').'"></a><a class="wpd-move" title="'.__('Click here to move', 'wp-docs').'"></a></span><a class="wpd-trash" title="'.__('Click here to delete', 'wp-docs').'"></a></span>'; ?></li>
+	<li title="<?php echo ($is_shortcut?($list['content']?__('Shortcut to', 'wp-docs').' '.'ID: '.$list['content']:''):'ID: '.$list['id']); ?>" class="<?php echo ($is_shortcut?'ab-short':'ab-dir'); ?>" data-id="<?php echo esc_attr($list['id']); ?>" data-resource="<?php echo base64_encode($list['id']); ?>" data-linked="<?php echo esc_attr($list['content']); ?>" data-guid="<?php echo $is_shortcut?esc_attr($list['link']):''; ?>"><a class="folder fa fa-folder"></a><a class="dtitle" title="<?php _e('Click here to rename', 'wp-docs'); ?>"><?php echo ($list['title']?esc_html($list['title']):'&nbsp;'); ?></a><?php echo '<span class="wpd_action_span"><a class="wpd-edit" title="'.__('Click here to edit', 'wp-docs').'"></a><span class="wpd_action_span_inner"><a class="wpd-copy" title="'.__('Click here to copy', 'wp-docs').'"></a><a class="wpd-move" title="'.__('Click here to move', 'wp-docs').'"></a></span><a class="wpd-trash" title="'.__('Click here to delete', 'wp-docs').'"></a></span>'; ?></li>
 <?php } }?>    
 <?php echo ($files_list!=''?$files_list:''); ?>
 </ul>
@@ -260,7 +260,7 @@ if(!empty($all_dirs)){
 <div class="wpdocs_log">
     <div class="row">
         <div class="col-4 text-center">
-            <a class="btn btn-light btn-sm p-1" title="<?php _e('Click here to download current directory', 'wp-docs'); ?>" href="<?php echo admin_url('options-general.php?page=wpdocs&download&wpdocs_dir='.$dir_id.'&wpdocs_wpnonce='.esc_attr($download_nonce)); ?>" data-dir_id="<?php echo $dir_id ?>">
+            <a class="btn btn-light btn-sm p-1" title="<?php _e('Click here to download current directory', 'wp-docs'); ?>" href="<?php echo admin_url('options-general.php?page=wpdocs&download&wpdocs_dir='.$dir_id.'&wpdocs_wpnonce='.esc_attr($download_nonce)); ?>" data-dir_id="<?php echo esc_attr($dir_id); ?>">
                 <i class="fa fa-download"></i>&nbsp;&nbsp;<?php _e('Download', 'wp-docs'); ?>
             </a>
         </div>
@@ -370,9 +370,9 @@ if(!empty($all_dirs)){
             <?php echo __('Customization', 'wp-docs'); ?> <small><?php echo __('(Optional)', 'wp-docs'); ?></small>
         </label>
     	<ul>
-        	<li title="<?php echo __('Icon Size', 'wp-docs'); ?>"><span class="fa fa-folder" style="color: #ffc107;"></span><label for="icon_size"><input id="icon_size" type="text" placeholder="50px" value="<?php echo $customize_icon_size; ?>" data-name="icon_size" name="wpdocs_options[icon_size]" /> <small><?php echo __('Icon Size', 'wp-docs'); ?></small></label></li>
+        	<li title="<?php echo __('Icon Size', 'wp-docs'); ?>"><span class="fa fa-folder" style="color: #ffc107;"></span><label for="icon_size"><input id="icon_size" type="text" placeholder="50px" value="<?php echo esc_attr($customize_icon_size); ?>" data-name="icon_size" name="wpdocs_options[icon_size]" /> <small><?php echo __('Icon Size', 'wp-docs'); ?></small></label></li>
             
-            <li title="<?php echo __('Font Size', 'wp-docs'); ?>"><span class="fa fa-font" style="color: #ffc107;"></span><label for="font_size"><input id="font_size" type="text" placeholder="16px" value="<?php echo $customize_font_size; ?>" data-name="font_size" name="wpdocs_options[font_size]" /> <small><?php echo __('Font Size', 'wp-docs'); ?></small></label></li>
+            <li title="<?php echo __('Font Size', 'wp-docs'); ?>"><span class="fa fa-font" style="color: #ffc107;"></span><label for="font_size"><input id="font_size" type="text" placeholder="16px" value="<?php echo esc_attr($customize_font_size); ?>" data-name="font_size" name="wpdocs_options[font_size]" /> <small><?php echo __('Font Size', 'wp-docs'); ?></small></label></li>
         </ul>
     </li>
     
@@ -386,7 +386,7 @@ if(!empty($all_dirs)){
         </label>
         <a href="https://wordpress.org/plugins/wp-responsive-tabs" target="_blank" title="<?php echo __('WP Responsive Tabs', 'wp-docs'); ?>">
 
-        <img height="190" src="<?php echo $wpdocs_url; ?>img/wp-responsive-tabs.gif" />
+        <img height="190" src="<?php echo esc_attr($wpdocs_url); ?>img/wp-responsive-tabs.gif" />
 
         </a>
 		<label for="wpdocs_addon">            
@@ -423,7 +423,7 @@ if(!empty($all_dirs)){
             <?php echo __('Display PDF File Thumbnail?', 'wp-docs'); ?> <br />
             <select name="wpdocs_options[pdf_thumb]" data-name="pdf_thumb" id="wpdocs_options_pdf_thumb">
             	<?php if(!empty($pdf_thumb)){ foreach($pdf_thumb as $alt_type){ ?>
-                	<option value="<?php echo $alt_type; ?>" <?php selected($alt_type==$pdf_thumb_selected); ?>><?php echo wpdoc_humanize($alt_type); ?></option>
+                	<option value="<?php echo esc_attr($alt_type); ?>" <?php selected($alt_type==$pdf_thumb_selected); ?>><?php echo wpdoc_humanize($alt_type); ?></option>
                 <?php } } ?>
             	
             </select>
@@ -439,7 +439,7 @@ if(!empty($all_dirs)){
             <?php echo __('Display Filename, Post Title or Post Description?', 'wp-docs'); ?> <br />
             <select name="wpdocs_options[filename_alt]" data-name="filename_alt" id="wpdocs_options_filename">
             	<?php if(!empty($filename_alt)){ foreach($filename_alt as $alt_type){ ?>
-                	<option value="<?php echo $alt_type; ?>" <?php selected($alt_type==$alt_filename); ?>><?php echo wpdoc_humanize($alt_type); ?></option>
+                	<option value="<?php echo esc_attr($alt_type); ?>" <?php selected($alt_type==$alt_filename); ?>><?php echo wpdoc_humanize($alt_type); ?></option>
                 <?php } } ?>
             	
             </select>
@@ -465,7 +465,7 @@ if(!empty($all_dirs)){
                   
     <li class="<?php echo $dir?'wpdocs-specific-sections':'wpdocs-general-sections'; ?>">
 
-        <button type="button" data-dir_id="<?php echo $dir_id; ?>" class="modal-btn btn-sm btn-danger border rounded-pill shadow-sm mb-2" data-toggle="modal" data-target="#right_modal_sm"><i class="fas fa-folder-plus"></i> <?php echo __('Directory Specific Settings?', 'wp-docs'); ?> <i class="fa fa-angle-right pl-2"></i></button>
+        <button type="button" data-dir_id="<?php echo esc_attr($dir_id); ?>" class="modal-btn btn-sm btn-danger border rounded-pill shadow-sm mb-2" data-toggle="modal" data-target="#right_modal_sm"><i class="fas fa-folder-plus"></i> <?php echo __('Directory Specific Settings?', 'wp-docs'); ?> <i class="fa fa-angle-right pl-2"></i></button>
         <div class="modal modal-right fade" id="right_modal_sm" tabindex="-1" role="dialog" aria-labelledby="right_modal_sm">
         <div class="modal-dialog modal-sm" role="document">
             <div class="modal-content">
@@ -532,27 +532,27 @@ if(!empty($all_dirs)){
         <ul class="ml-4">
             <li>
                 <label for="wpdocs_options_box_bg_color">
-                    <input type="color" name="wpdocs_options[box_bg_color]" value="<?php echo  $box_bg_color = array_key_exists('box_bg_color', $wpdocs_options)?$wpdocs_options['box_bg_color']:''; ?>" id="box_bg_color"  />
+                    <input type="color" name="wpdocs_options[box_bg_color]" value="<?php echo  $box_bg_color = array_key_exists('box_bg_color', $wpdocs_options)?esc_attr($wpdocs_options['box_bg_color']):''; ?>" id="box_bg_color"  />
                     <?php echo __('Directory Background Color', 'wp-docs'); ?> <small></small> <i class="fas fa-palette" style="color:<?php echo ($box_bg_color?''.$box_bg_color.'':'#ffc107'); ?>"></i>
                 </label>
             </li>
             <li>
                 <label for="wpdocs_options_box_txt_color">
-                    <input type="color" name="wpdocs_options[box_txt_color]" value="<?php echo  $box_txt_color = array_key_exists('box_txt_color', $wpdocs_options)?$wpdocs_options['box_txt_color']:''; ?>" id="box_txt_color"  />
+                    <input type="color" name="wpdocs_options[box_txt_color]" value="<?php echo  $box_txt_color = array_key_exists('box_txt_color', $wpdocs_options)?esc_attr($wpdocs_options['box_txt_color']):''; ?>" id="box_txt_color"  />
                     <?php echo __('Directory Text Color', 'wp-docs'); ?> <small></small> <i class="fas fa-palette" style="color:<?php echo ($box_txt_color?''.$box_txt_color.'':'#ffc107'); ?>"></i>
                 </label>
             </li> 
             
             <li>
                 <label for="wpdocs_options_box_hbg_color">
-                    <input type="color" name="wpdocs_options[box_hbg_color]" value="<?php echo  $box_hbg_color = array_key_exists('box_hbg_color', $wpdocs_options)?$wpdocs_options['box_hbg_color']:''; ?>" id="box_hbg_color"  />
+                    <input type="color" name="wpdocs_options[box_hbg_color]" value="<?php echo  $box_hbg_color = array_key_exists('box_hbg_color', $wpdocs_options)?esc_attr($wpdocs_options['box_hbg_color']):''; ?>" id="box_hbg_color"  />
                     <?php echo __('Directory Hover Background Color', 'wp-docs'); ?> <small></small> <i class="fas fa-palette" style="color:<?php echo ($box_hbg_color?''.$box_hbg_color.'':'#ffc107'); ?>"></i>
                 </label>
             </li>  
             
             <li>
                 <label for="wpdocs_options_box_htxt_color">
-                    <input type="color" name="wpdocs_options[box_htxt_color]" value="<?php echo $box_htxt_color = array_key_exists('box_htxt_color', $wpdocs_options)?$wpdocs_options['box_htxt_color']:''; ?>" id="box_htxt_color"  />
+                    <input type="color" name="wpdocs_options[box_htxt_color]" value="<?php echo $box_htxt_color = array_key_exists('box_htxt_color', $wpdocs_options)?esc_attr($wpdocs_options['box_htxt_color']):''; ?>" id="box_htxt_color"  />
                     <?php echo __('Directory Hover Text Color', 'wp-docs'); ?> <small></small> <i class="fas fa-palette" style="color:<?php echo ($box_htxt_color?''.$box_htxt_color.'':'#ffc107'); ?>"></i>
                 </label>
             </li>                                    
@@ -568,7 +568,7 @@ if(!empty($all_dirs)){
 <ul class="col col-md-12 mt-4">
 	<li class="promotions"></li>
     <li style="text-align:center;">
-    <a href="https://wordpress.org/plugins/gulri-slider" target="_blank" title="<?php echo __('Image Slider', 'wp-docs'); ?>"><img src="<?php echo $wpdocs_url; ?>img/gslider.gif" /></a>
+    <a href="https://wordpress.org/plugins/gulri-slider" target="_blank" title="<?php echo __('Image Slider', 'wp-docs'); ?>"><img src="<?php echo esc_attr($wpdocs_url); ?>img/gslider.gif" /></a>
     </li>
 </ul>
 </div>
@@ -594,7 +594,7 @@ if(!empty($all_dirs)){
             <ul class="position-relative">
                 <li><a class="btn btn-sm btn-info" href="https://wordpress.org/support/plugin/wp-docs/" target="_blank" aria-label="<?php _e('Open a Ticket on Support Forums', 'wp-docs'); ?> (Opens in a new window)"><?php _e('Open a Ticket on Support Forums', 'wp-docs'); ?> &nbsp;<i class="fas fa-tag"></i></a></li>
                 <li><a class="btn btn-sm btn-warning" href="http://demo.androidbubble.com/contact/" target="_blank" aria-label="<?php _e('Contact Developer', 'wp-docs'); ?> (Opens in a new window)"><?php _e('Contact Developer', 'wp-docs'); ?> &nbsp;<i class="fas fa-headset"></i></a></li>
-                <li><a class="btn btn-sm btn-secondary" href="<?php echo $wpdocs_premium_link; ?>/?help" target="_blank" aria-label="<?php _e('Need Urgent Help?', 'wp-docs'); ?> (Opens in a new window)"><?php _e('Need Urgent Help?', 'wp-docs'); ?> &nbsp;<i class="fas fa-phone"></i></i></a></li>
+                <li><a class="btn btn-sm btn-secondary" href="<?php echo esc_attr($wpdocs_premium_link); ?>/?help" target="_blank" aria-label="<?php _e('Need Urgent Help?', 'wp-docs'); ?> (Opens in a new window)"><?php _e('Need Urgent Help?', 'wp-docs'); ?> &nbsp;<i class="fas fa-phone"></i></i></a></li>
                 
                
                 <li><iframe width="560" height="315" src="https://www.youtube.com/embed/k5bZqZ5dW30?t=<?php date('d'); ?>" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></li>

@@ -5,7 +5,7 @@ License: GPL2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires at least: 3.5
 Tested up to: 6.9
-Stable tag: 2.2.9
+Stable tag: 2.3.0
 Requires PHP: 7.0
 A documents management tool for education portals.
 
@@ -136,6 +136,8 @@ Use the browse button to select the plugin zip file that was downloaded, then cl
 20. File description instead of file name.
 
 == Changelog ==
+= 2.3.0 =
+* Security: Escaped all dynamic attributes and text in the folder <li> output for XSS safety using esc_attr() and esc_html__().
 = 2.2.9 =
 * Security: Fixed Broken Access Control in AJAX handlers `wpdocs_create_folder` and `wpdocs_delete_folder` by adding proper capability checks (`manage_options`). [Thanks to hhhai / Patchstack]
 * Fix: Deleting unused folder in WP Docs. [Thanks to Jordan Wells / gclna.org]
@@ -363,6 +365,8 @@ Use the browse button to select the plugin zip file that was downloaded, then cl
 * Initial Release of WP Docs
 
 == Upgrade Notice ==
+= 2.3.0 =
+Security: Escaped all dynamic attributes and text in the folder <li> output for XSS safety using esc_attr() and esc_html__().
 = 2.2.9 =
 This update includes a **security fix** for Broken Access Control in folder creation and deletion via AJAX. Only administrators can now create or delete folders, preventing unauthorized users from modifying your documents. We also fixed an issue with deleting unused folders.  
 = 2.2.8 =
