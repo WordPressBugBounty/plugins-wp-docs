@@ -4,8 +4,8 @@ Tags: wp docs, memphis-documents-library, documents, library folders, directory
 License: GPL2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires at least: 3.5
-Tested up to: 6.9
-Stable tag: 2.3.0
+Tested up to: 7.0
+Stable tag: 2.3.1
 Requires PHP: 7.0
 A documents management tool for education portals.
 
@@ -136,6 +136,8 @@ Use the browse button to select the plugin zip file that was downloaded, then cl
 20. File description instead of file name.
 
 == Changelog ==
+= 2.3.1 = 
+* Enhancement: Added Memphis Documents Library verification tool to check imported files and folders integrity, "Import Missing Items Only" button, clickable folder links in verification tree, and full localization support. [Thanks to Teboho Ramonyaluoa][2026-06-05]
 = 2.3.0 =
 * Security: Escaped all dynamic attributes and text in the folder <li> output for XSS safety using esc_attr() and esc_html__().
 = 2.2.9 =
@@ -365,6 +367,8 @@ Use the browse button to select the plugin zip file that was downloaded, then cl
 * Initial Release of WP Docs
 
 == Upgrade Notice ==
+= 2.3.1 = 
+Enhancement: Added Memphis Documents Library verification tool to check imported files and folders integrity, "Import Missing Items Only" button, clickable folder links in verification tree, and full localization support.
 = 2.3.0 =
 Security: Escaped all dynamic attributes and text in the folder <li> output for XSS safety using esc_attr() and esc_html__().
 = 2.2.9 =

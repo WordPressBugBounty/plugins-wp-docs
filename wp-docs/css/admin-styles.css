@@ -722,4 +722,7 @@
 	.wp-docs-multi-select.selection-enabled i.far{
 		display:none;
 	}
-	
+	div.wrap.wpdocs-wrapper div.fs-notice,
+	div.wrap.wpdocs-wrapper div.notice{
+		display:none !important;
+	}

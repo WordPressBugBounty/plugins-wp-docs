@@ -53,6 +53,8 @@ if ($wp_docs_is_memphis) {
                         $dir_string = __('Memphis Directories', 'wp-docs');
                         $files_string = __('Memphis Files', 'wp-docs');
                         $out_of_string = __('Out of', 'wp-docs');
+						$import_folder = ($import_folder>$total_folder?$total_folder:$import_folder);
+						$import_files = ($import_files>$total_files?$total_files:$import_files);
 
                         echo "<li class='list-group-item'>{$dir_string}: <strong class='float-right d-inline-block'>{$import_folder} {$out_of_string} {$total_folder}</strong></li>";
                         echo "<li class='list-group-item'>{$files_string}: <strong class='float-right d-inline-block'>{$import_files} {$out_of_string} {$total_files}</strong></li>";
@@ -77,9 +79,37 @@ if ($wp_docs_is_memphis) {
                         }
                         ?>
                         <button data-text="<?php _e('Please wait...', 'wp-docs'); ?>" class="btn btn-primary btn-sm wp_docs_import_memphis"><?php _e('Import From Memphis Documents Library', 'wp-docs') ?></button>
+                        
+                        <button data-text="<?php _e('Please wait...', 'wp-docs'); ?>" class="btn btn-warning btn-sm wp_docs_verify_memphis">
+        			<?php _e('Verify Files & Folders', 'wp-docs'); ?>
+    					</button>
                     </div>
                     
                     <div class="alert alert-danger mt-2" style="font-size: 14px;text-align: center;padding: 2px 0 4px;cursor: pointer; margin-bottom:0;" title="<?php _e('Memphis Documents Library .htaccess file in mdocs directory will not let you browse the files on front-end.', 'wp-docs'); ?>"><?php _e('We recommend deactivation of Memphis Documents Library after import.', 'wp-docs'); ?></div>
+                                        
+                                        <!-- Progress Bar Container -->
+                    <div id="wpdocs_memphis_verify_progress_wrap" style="display:none; margin: 20px 0;">
+                        <div style="background:#f0f0f0; border-radius:4px; overflow:hidden; height:30px;">
+                            <div id="wpdocs_memphis_verify_progress_bar" style="background:#0073aa; height:100%; width:0%; display:flex; align-items:center; justify-content:center; color:#fff; font-size:12px;">
+                                0%
+                            </div>
+                        </div>
+                        <div id="wpdocs_memphis_verify_current" style="margin-top:10px; font-size:13px; color:#666;"></div>
+                    </div>
+                    
+                    <!-- Statistics Results Container -->
+                    <div id="wpdocs_memphis_verify_results" style="margin: 20px 0;"></div>
+                    
+                    <!-- Tree Container -->
+                    <div id="wpdocs_memphis_verify_tree" style="max-height:500px; overflow-y:auto; border:1px solid #ddd; padding:15px; background:#fafafa; border-radius:4px;"></div>
+                    
+                    <!-- Import Missing Button Container -->
+                    <div id="wpdocs_memphis_import_missing_wrap" style="margin-top:20px; display:none;">
+                        <button type="button" class="btn btn-danger wp_docs_import_missing_memphis">
+                            <?php _e('Import Missing Items Only', 'wp-docs'); ?>
+                        </button>
+                    </div>
+
                 </div>
 
             </div>
