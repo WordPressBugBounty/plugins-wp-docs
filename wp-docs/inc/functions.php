@@ -1,5 +1,17 @@
 <?php
-
+	if(!function_exists('wpdocs_secure_url')){
+		function wpdocs_secure_url($file_id=''){
+			
+			$ret = add_query_arg(
+										array(
+											'wpdocs_dl'    => $file_id,
+											'wpdocs_nonce' => wp_create_nonce('wpdocs_dl_'.$file_id),
+										),
+										home_url('/')
+									);
+			return $ret;
+		}
+	}
 	if(!function_exists('wp_docs_get_memphis_dir_option_id')){
 		function wp_docs_get_option_id($option_name){
 			global $wpdb;
@@ -931,13 +943,7 @@
 				$class = '';
 				
 
-				$secured_file_url = add_query_arg(
-										array(
-											'wpdocs_dl'    => $file_id,
-											'wpdocs_nonce' => wp_create_nonce('wpdocs_dl_'.$file_id),
-										),
-										home_url('/')
-									);
+				$secured_file_url = wpdocs_secure_url($file_id);
 				
 				$files_list[ $title ] = '<li data-id="' . esc_attr( $item ) . '" data-dir="' . esc_attr( $dir ) . '" title="' . esc_attr( $filename ) . '">
     <a href="' . esc_url( $secured_file_url ) . '" target="_blank" class="file ' . esc_attr( $class ) . '"> ' . $icon_str . ' </a>
@@ -1479,13 +1485,7 @@
 													break;
 												}
 												
-												$secured_file_url = add_query_arg(
-																		array(
-																			'wpdocs_dl'    => $file_id,
-																			'wpdocs_nonce' => wp_create_nonce('wpdocs_dl_' . $file_id),
-																		),
-																		home_url('/')
-																	);
+												$secured_file_url = wpdocs_secure_url($file_id);
 											
 												$file_list_row = '
 
@@ -1572,13 +1572,7 @@
 													break;
 												}
 												
-												$secured_file_url = add_query_arg(
-																		array(
-																			'wpdocs_dl'    => $file_id,
-																			'wpdocs_nonce' => wp_create_nonce('wpdocs_dl_' . $file_id),
-																		),
-																		home_url('/')
-																	);
+												$secured_file_url = wpdocs_secure_url($file_id);
 											
 												$file_list_row = '
 
@@ -1680,13 +1674,7 @@
 											
 											if(trim($file_url)){
 												
-												$secured_file_url = add_query_arg(
-																		array(
-																			'wpdocs_dl'    => $file_id,
-																			'wpdocs_nonce' => wp_create_nonce('wpdocs_dl_' . $file_id),
-																		),
-																		home_url('/')
-																	);
+												$secured_file_url = wpdocs_secure_url($file_id);
 											
 												$file_list_row = '
 																<div title="'.esc_attr($filename).'" class="col-12 file_wrapper is_file" style="cursor: pointer;" data-id="'.$file.'">
@@ -1884,13 +1872,7 @@
 													//pree($ts);
 													
 													if(trim($icon_url)){
-													$secured_file_url = add_query_arg(
-																		array(
-																			'wpdocs_dl'    => $file_id,
-																			'wpdocs_nonce' => wp_create_nonce('wpdocs_dl_' . $file_id),
-																		),
-																		home_url('/')
-																	);	
+													$secured_file_url = wpdocs_secure_url($file_id);	
 													$files_list_row = '
 													<tr title="'.esc_attr($filename).'" data-url="'.$secured_file_url.'" class="file_view file_link is_file" style="cursor: pointer;" data-id="'.$file.'">
 
@@ -1948,13 +1930,7 @@
 													
 													if(trim($icon_url)){
 														
-													$secured_file_url = add_query_arg(
-																		array(
-																			'wpdocs_dl'    => $file_id,
-																			'wpdocs_nonce' => wp_create_nonce('wpdocs_dl_' . $file_id),
-																		),
-																		home_url('/')
-																	);	
+													$secured_file_url = wpdocs_secure_url($file_id);	
 													
 													$files_list_row = '
 													<tr title="'.esc_attr($filename).'" data-url="'.$secured_file_url.'" class="file_view file_link is_file is_deep" style="cursor: pointer;" data-id="'.$file.'">
@@ -2844,79 +2820,81 @@ if(!function_exists('wpdocs_add_breadcrumb')){
 
         }
     }
-	function wpdocs_file_download(){
-	
-		if(empty($_GET['wpdocs_dl'])){
-			return;
-		}
-	
-		$file_id = absint(
-			wp_unslash($_GET['wpdocs_dl'])
-		);
-	
-		if(!$file_id){
-			status_header(404);
+	if(!function_exists('wpdocs_file_download')){
+		function wpdocs_file_download(){
+		
+			if(empty($_GET['wpdocs_dl'])){
+				return;
+			}
+		
+			$file_id = absint(
+				wp_unslash($_GET['wpdocs_dl'])
+			);
+		
+			if(!$file_id){
+				status_header(404);
+				exit;
+			}
+		
+			$nonce = isset($_GET['wpdocs_nonce'])
+				? sanitize_text_field(
+					wp_unslash($_GET['wpdocs_nonce'])
+				)
+				: '';
+		
+			if(
+				!wp_verify_nonce(
+					$nonce,
+					'wpdocs_dl_' . $file_id
+				)
+			){
+				status_header(403);
+				exit;
+			}
+		
+			// Adjust this according to where you store the file
+			$file = get_attached_file($file_id);
+		
+			if(
+				!$file ||
+				!file_exists($file)
+			){
+				status_header(404);
+				exit;
+			}
+		
+			$uploads   = wp_get_upload_dir();
+			$base_real = realpath($uploads['basedir']);
+			$file_real = realpath($file);
+		
+			if(
+				!$base_real ||
+				!$file_real ||
+				strpos(
+					$file_real,
+					$base_real . DIRECTORY_SEPARATOR
+				) !== 0
+			){
+				status_header(403);
+				exit;
+			}
+		
+			$mime = wp_check_filetype($file_real);
+			$mime = !empty($mime['type'])
+				? $mime['type']
+				: 'application/octet-stream';
+		
+			header('Content-Type: ' . $mime);
+			header('Content-Length: ' . filesize($file_real));
+			header(
+				'Content-Disposition: inline; filename="' .
+				basename($file_real) .
+				'"'
+			);
+		
+			readfile($file_real);
 			exit;
 		}
-	
-		$nonce = isset($_GET['wpdocs_nonce'])
-			? sanitize_text_field(
-				wp_unslash($_GET['wpdocs_nonce'])
-			)
-			: '';
-	
-		if(
-			!wp_verify_nonce(
-				$nonce,
-				'wpdocs_dl_' . $file_id
-			)
-		){
-			status_header(403);
-			exit;
-		}
-	
-		// Adjust this according to where you store the file
-		$file = get_attached_file($file_id);
-	
-		if(
-			!$file ||
-			!file_exists($file)
-		){
-			status_header(404);
-			exit;
-		}
-	
-		$uploads   = wp_get_upload_dir();
-		$base_real = realpath($uploads['basedir']);
-		$file_real = realpath($file);
-	
-		if(
-			!$base_real ||
-			!$file_real ||
-			strpos(
-				$file_real,
-				$base_real . DIRECTORY_SEPARATOR
-			) !== 0
-		){
-			status_header(403);
-			exit;
-		}
-	
-		$mime = wp_check_filetype($file_real);
-		$mime = !empty($mime['type'])
-			? $mime['type']
-			: 'application/octet-stream';
-	
-		header('Content-Type: ' . $mime);
-		header('Content-Length: ' . filesize($file_real));
-		header(
-			'Content-Disposition: inline; filename="' .
-			basename($file_real) .
-			'"'
-		);
-	
-		readfile($file_real);
-		exit;
 	}
 	
     add_action('init', 'wpdocs_dir_actions');
