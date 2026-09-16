@@ -667,8 +667,28 @@
 		
 		return $ret;
 	}
+	function wpdocs_create_folder_post( $post_parent, $post_title = "New Folder" ) {
+
+		if ( ! is_user_logged_in() || ! current_user_can( 'manage_options' ) ) {
+			return 0;
+		}
 	
-	function wpdocs_create_folder_post($post_parent, $post_title = "New Folder")
+		$post_parent = absint( $post_parent );
+		$post_title  = sanitize_text_field( $post_title );
+	
+		$my_post = array(
+			'post_title'    => $post_title,
+			'post_content'  => '',
+			'post_status'   => 'hidden',
+			'post_author'   => get_current_user_id(),
+			'post_type'     => 'wpdocs_folder',
+			'post_parent'   => ( ( $post_parent > 0 && wpdocs_folder_exists( $post_parent ) ) ? $post_parent : 0 ),
+			'post_category' => array(),
+		);
+	
+		return wp_insert_post( $my_post );
+	}
+	/*function wpdocs_create_folder_post($post_parent, $post_title = "New Folder")
 	{
 	
 		$my_post = array(
@@ -684,7 +704,7 @@
 		$dir_id = wp_insert_post($my_post);
 		
 		return $dir_id;
-	}
+	}*/
 	
 	add_action('wp_ajax_wpdocs_create_folder', 'wpdocs_create_folder');
 	
@@ -822,9 +842,66 @@
 		}
 	}
 	
+	/**
+	 * Centralize the "can this user edit this folder?" decision.
+	 * Admins always pass; otherwise require the folder to be owned by the user.
+	 */
+	function wpdocs_user_can_edit_folder( $dir_id ) {
+		if ( current_user_can( 'manage_options' ) ) {
+			return true;
+		}
+	
+		$dir = get_post( $dir_id );
+		if ( ! $dir || 'wpdocs_folder' !== $dir->post_type ) { // adjust CPT slug
+			return false;
+		}
+	
+		return (int) $dir->post_author === get_current_user_id();
+	}
+	
 	add_action('wp_ajax_wpdocs_add_files', 'wpdocs_add_files');
 	
-	function wpdocs_add_files(){
+	function wpdocs_add_files() {
+	
+		// 1) Capability FIRST — before nonce, before anything.
+		if ( ! is_user_logged_in() || ! current_user_can( 'upload_files' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'wp-docs' ) ), 403 );
+		}
+	
+		// 2) Nonce check.
+		if ( empty( $_POST['nonce'] )
+			|| ! wp_verify_nonce(
+				sanitize_wpdocs_data( wp_unslash( $_POST['nonce'] ) ),
+				'wpdocs_update_options_nonce'
+			)
+		) {
+			wp_send_json_error( array( 'message' => __( 'Sorry, your nonce did not verify.', 'wp-docs' ) ), 403 );
+		}
+	
+		// 3) Input validation.
+		$dir_id = isset( $_POST['dir_id'] ) ? absint( $_POST['dir_id'] ) : 0;
+		if ( ! $dir_id ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid folder.', 'wp-docs' ) ), 400 );
+		}
+	
+		// 4) Per-folder ownership / capability gate.
+		if ( ! wpdocs_user_can_edit_folder( $dir_id ) ) {
+			wp_send_json_error( array( 'message' => __( 'You cannot modify this folder.', 'wp-docs' ) ), 403 );
+		}
+	
+		$files = isset( $_POST['files'] ) ? sanitize_wpdocs_data( $_POST['files'] ) : array();
+		$files = is_array( $files ) ? $files : array( $files );
+		$files = array_filter( array_map( 'absint', $files ) );
+	
+		wpdocs_update_files_meta( $dir_id, $files );
+	
+		$ret = ! empty( $files ) ? wpdocs_list_added_items( $dir_id ) : '';
+	
+		echo $ret;
+		exit;
+	}
+	
+	/*function wpdocs_add_files_old(){
 
 		$nonce = sanitize_wpdocs_data(wp_unslash($_POST['nonce']));
 		
@@ -852,7 +929,7 @@
 			
 		echo $ret;
 		exit;
-	}
+	}*/
 	function wpdocs_list_added_items($dir)
 	{
 	
@@ -2119,6 +2196,51 @@
 	
 	function wpdocs_update_folder() {
 	
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( array( 'msg' => __( 'Unauthorized access.', 'wp-docs' ) ), 403 );
+		}
+	
+		if (
+			empty( $_POST['nonce'] ) ||
+			! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'wpdocs_update_options_nonce' )
+		) {
+			wp_send_json_error( array( 'msg' => __( 'Sorry, your nonce did not verify.', 'wp-docs' ) ), 403 );
+		}
+	
+		$dir_id      = absint( $_POST['dir_id'] ?? 0 );
+		$resource_id = base64_decode( sanitize_text_field( $_POST['resource_id'] ?? '' ) );
+		$new_name    = sanitize_text_field( $_POST['new_name'] ?? '' );
+	
+		if ( ! $dir_id || $resource_id != $dir_id || ! wpdocs_folder_exists( $dir_id ) ) {
+			wp_send_json_error( array( 'msg' => __( 'Invalid folder ID or resource mismatch.', 'wp-docs' ) ), 400 );
+		}
+	
+		global $wpdb, $wpdocs_post_types, $wpdocs_post_status;
+	
+		$updated = $wpdb->query(
+			$wpdb->prepare(
+				"UPDATE $wpdb->posts
+				 SET post_title = %s
+				 WHERE ID = %d
+				   AND post_type IN ('" . implode( "','", array_map( 'esc_sql', $wpdocs_post_types ) ) . "')
+				   AND post_status = %s",
+				htmlspecialchars_decode( $new_name ),
+				$dir_id,
+				$wpdocs_post_status
+			)
+		);
+	
+		wp_send_json_success(
+			array(
+				'msg' => $updated
+					? __( 'Successfully updated.', 'wp-docs' )
+					: __( 'No changes were made. Input seems the same as before.', 'wp-docs' ),
+			)
+		);
+	}
+
+	/*function wpdocs_update_folder() {
+	
 		
 		if ( ! current_user_can('edit_posts') ) {
 			wp_send_json_error(['msg' => __('Unauthorized access.', 'wp-docs')]);
@@ -2166,12 +2288,33 @@
 		}
 	
 		wp_send_json_success($ret);
-	}
+	}*/
 
 	
 	add_action('wp_ajax_wpdocs_delete_folder', 'wpdocs_delete_folder');
 
-	function wpdocs_delete_folder()
+	function wpdocs_delete_folder() {
+	
+		if ( ! is_user_logged_in() || ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( array( 'msg' => __( 'Unauthorized user', 'wp-docs' ) ), 403 );
+		}
+	
+		if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_wpdocs_data( wp_unslash( $_POST['nonce'] ) ), 'wpdocs_update_options_nonce' ) ) {
+			wp_send_json_error( array( 'msg' => __( 'Sorry, your nonce did not verify.', 'wp-docs' ) ), 403 );
+		}
+	
+		$dir_id      = isset( $_POST['dir_id'] ) ? absint( $_POST['dir_id'] ) : 0;
+		$resource_id = base64_decode( sanitize_wpdocs_data( $_POST['resource_id'] ?? '' ) );
+	
+		if ( ! $dir_id || $dir_id != $resource_id || ! wpdocs_folder_exists( $dir_id ) ) {
+			wp_send_json_error( array( 'msg' => __( 'Invalid folder.', 'wp-docs' ) ), 400 );
+		}
+	
+		wpdocs_recursive_delete_folder( $dir_id );
+	
+		wp_send_json_success();
+	}
+	/*function wpdocs_delete_folder()
 	{
 		
 		if ( ! current_user_can( 'manage_options' ) ) {
@@ -2192,7 +2335,7 @@
 		}
 		
 		exit;
-	}	
+	}	*/
 
 
 	
@@ -2274,9 +2417,57 @@
             }
         }
     }
-
-
 	
+	function wpdocs_delete_files() {
+		if ( ! is_user_logged_in() || ! current_user_can( 'delete_posts' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'wp-docs' ) ), 403 );
+		}
+	
+		if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_wpdocs_data( wp_unslash( $_POST['nonce'] ) ), 'wpdocs_update_options_nonce' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Sorry, your nonce did not verify.', 'wp-docs' ) ), 403 );
+		}
+	
+		$dir_id = isset( $_POST['dir_id'] ) ? absint( $_POST['dir_id'] ) : 0;
+		$files  = isset( $_POST['files'] ) ? (array) $_POST['files'] : array();
+		$files  = array_values( array_unique( array_filter( array_map( 'absint', $files ) ) ) );
+	
+		if ( ! $dir_id || ! wpdocs_folder_exists( $dir_id ) || empty( $files ) ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid request.', 'wp-docs' ) ), 400 );
+		}
+	
+		$is_admin = current_user_can( 'manage_options' );
+		$is_owner = wpdocs_user_can_edit_folder( $dir_id );
+	
+		if ( ! $is_admin && ! $is_owner ) {
+			wp_send_json_error( array( 'message' => __( 'You cannot delete files from this folder.', 'wp-docs' ) ), 403 );
+		}
+	
+		$allowed = array();
+		foreach ( $files as $file_id ) {
+			$attachment = get_post( $file_id );
+			if ( ! $attachment || 'attachment' !== $attachment->post_type ) {
+				continue;
+			}
+			if ( $is_admin || current_user_can( 'edit_post', $file_id ) ) {
+				$allowed[] = $file_id;
+			}
+		}
+	
+		if ( empty( $allowed ) ) {
+			wp_send_json_error( array( 'message' => __( 'None of the specified files can be deleted by you.', 'wp-docs' ) ), 403 );
+		}
+	
+		wpdocs_del_items_by_user( $dir_id, $allowed, get_current_user_id() );
+	
+		$wpdocs_items = wpdocs_added_items( $dir_id );
+		$wpdocs_items = array_values( array_unique( array_diff( (array) $wpdocs_items, $allowed ) ) );
+	
+		update_post_meta( $dir_id, 'wpdocs_items', $wpdocs_items );
+	
+		wp_send_json_success( array( 'dir_id' => $dir_id, 'files' => $allowed ) );
+	}
+
+	/*
 	function wpdocs_delete_files()
 	{
 
@@ -2302,7 +2493,7 @@
 
 
 		exit;
-	}	
+	}	*/
 	
 	function wpd_admin_footer(){
 		
@@ -2600,9 +2791,44 @@ if(!function_exists('wpdocs_add_breadcrumb')){
 }
 
 	add_action('wp_ajax_wpdocs_update_view', 'wpdocs_update_view');
-	add_action('wp_ajax_nopriv_wpdocs_update_view', 'wpdocs_update_view');
-		
-	if(!function_exists('wpdocs_update_view')){
+	
+	
+	if ( ! function_exists( 'wpdocs_update_view' ) ) {
+		function wpdocs_update_view() {
+	
+			if ( ! is_user_logged_in() || ! current_user_can( 'read' ) ) {
+				wp_send_json_error( array( 'msg' => __( 'Unauthorized access.', 'wp-docs' ) ), 403 );
+			}
+	
+			if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_wpdocs_data( wp_unslash( $_POST['nonce'] ) ), 'wpdocs_update_options_nonce' ) ) {
+				wp_send_json_error( array( 'msg' => __( 'Sorry, your nonce did not verify.', 'wp-docs' ) ), 403 );
+			}
+	
+			$uid  = get_current_user_id();
+			$key  = 'wpdocs_view_rl_' . $uid;
+			$hits = (int) get_transient( $key );
+	
+			if ( $hits >= 60 ) {
+				wp_send_json_error( array( 'msg' => __( 'Too many requests.', 'wp-docs' ) ), 429 );
+			}
+			set_transient( $key, $hits + 1, MINUTE_IN_SECONDS );
+	
+			if ( isset( $_POST['update_view'] ) ) {
+	
+				$wpdocs_view = get_option( 'wpdocs_view', array() );
+				$wpdocs_view = is_array( $wpdocs_view ) ? $wpdocs_view : array();
+	
+				$parent_dir = sanitize_wpdocs_data( $_POST['parent_dir'] ?? '' );
+				$view_val   = sanitize_wpdocs_data( $_POST['update_view'] );
+	
+				$wpdocs_view[ $parent_dir ] = $view_val;
+				update_option( 'wpdocs_view', $wpdocs_view );
+			}
+	
+			wp_send_json_success();
+		}
+	}	
+	/*if(!function_exists('wpdocs_update_view')){
 		function wpdocs_update_view(){
 			
 			$nonce = sanitize_wpdocs_data(wp_unslash($_POST['nonce']));
@@ -2622,7 +2848,7 @@ if(!function_exists('wpdocs_add_breadcrumb')){
 			}
 			exit;
 		}
-	}
+	}*/
 	function wpdocs_init_session() {
 		if(!session_id()) {
 			session_start();

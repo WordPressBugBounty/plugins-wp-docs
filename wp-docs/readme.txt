@@ -5,7 +5,7 @@ License: GPL2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires at least: 3.5
 Tested up to: 7.1
-Stable tag: 2.3.3
+Stable tag: 2.3.4
 Requires PHP: 7.0
 A documents management tool for education portals.
 
@@ -136,6 +136,8 @@ Use the browse button to select the plugin zip file that was downloaded, then cl
 20. File description instead of file name.
 
 == Changelog ==
+= 2.3.4 = 
+* Security: Fixed Stored XSS (CVE-2026-81782) — hardened `sanitize_wpdocs_data()` and added `esc_html`/`esc_attr`/`esc_url` output escaping across frontend and admin views. * Security: Added capability checks to `wpdocs_add_files`, `wpdocs_delete_files`, `wpdocs_update_folder`; removed `nopriv` from `wpdocs_update_view`.
 = 2.3.1 = 
 * Enhancement: Added Memphis Documents Library verification tool to check imported files and folders integrity, "Import Missing Items Only" button, clickable folder links in verification tree, and full localization support. [Thanks to Teboho Ramonyaluoa][2026-06-05]
 = 2.3.0 =
@@ -367,6 +369,8 @@ Use the browse button to select the plugin zip file that was downloaded, then cl
 * Initial Release of WP Docs
 
 == Upgrade Notice ==
+= 2.3.4 =
+Security release. Fixes Stored XSS (CVE-2026-81782) and adds missing capability checks to AJAX handlers. Update immediately.
 = 2.3.1 = 
 Enhancement: Added Memphis Documents Library verification tool to check imported files and folders integrity, "Import Missing Items Only" button, clickable folder links in verification tree, and full localization support.
 = 2.3.0 =
