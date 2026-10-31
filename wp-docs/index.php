@@ -1,19 +1,28 @@
-<?php defined( 'ABSPATH' ) or die( 'No fankari bachay!' );
+<?php defined( 'ABSPATH' ) or die( 'No direct access.' );
 /*
 Plugin Name: WP Docs
 Plugin URI: http://androidbubble.com/blog/wp-docs
 Description: A documents management tool for education portals.
 Author: Fahad Mahmood
-Version: 2.3.4
+Version: 2.3.5
+Requires at least: 5.8
+Requires PHP: 7.4
 Text Domain: wp-docs
 Domain Path: /languages
 Author URI: https://profiles.wordpress.org/fahadmahmood/
-License: GPL2
+License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
 	
 This WordPress Plugin is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or any later version. This free software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along with this software. If not, see http://www.gnu.org/licenses/gpl-2.0.html.	
 */
 
+	if(!defined('WPDOCS_VERSION')){ define('WPDOCS_VERSION', '2.3.5'); }
+	if(!defined('WPDOCS_FILE')){ define('WPDOCS_FILE', __FILE__); }
+	
 	require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+	if(!function_exists('get_plugin_data')){
+		require_once(ABSPATH . 'wp-admin/includes/plugin.php');
+	}
 	
 	if(isset($_GET['page']) && $_GET['page']=='wpdocs'){
 		//require_once __DIR__ . '/spatie/vendor/autoload.php';
@@ -57,14 +66,19 @@ This WordPress Plugin is free software: you can redistribute it and/or modify it
 	$wpdocs_pro_file = $wpdocs_dir.'pro/wp-docs-pro.php';
 
 		
-	include_once 'inc/common.php';
+	include_once $wpdocs_dir.'inc/common.php';
 	
-    $wpdocs_pro = file_exists($wpdocs_pro_file);
+    /**
+     * The "pro" directory is optional and plug-and-play:
+     * - if pro/wp-docs-pro.php exists, premium features are loaded;
+     * - if the pro directory is missing (or WPDOCS_DISABLE_PRO is true), the free version runs without errors.
+     */
+    $wpdocs_pro = (!(defined('WPDOCS_DISABLE_PRO') && WPDOCS_DISABLE_PRO) && is_readable($wpdocs_pro_file));
     if($wpdocs_pro){
-        include($wpdocs_pro_file);
+        include_once($wpdocs_pro_file);
     }	
 	
-	include_once('inc/functions.php');
+	include_once($wpdocs_dir.'inc/functions.php');
 
 	if(is_admin()){
 		$plugin = plugin_basename(__FILE__); 

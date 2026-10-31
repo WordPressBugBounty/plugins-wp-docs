@@ -3,10 +3,10 @@ Contributors: fahadmahmood, invoicepress
 Tags: wp docs, memphis-documents-library, documents, library folders, directory
 License: GPL2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
-Requires at least: 3.5
+Requires at least: 5.8
 Tested up to: 7.1
-Stable tag: 2.3.4
-Requires PHP: 7.0
+Stable tag: 2.3.5
+Requires PHP: 7.4
 A documents management tool for education portals.
 
 == Description ==
@@ -136,6 +136,15 @@ Use the browse button to select the plugin zip file that was downloaded, then cl
 20. File description instead of file name.
 
 == Changelog ==
+= 2.3.5 =
+* Security: Premium (pro) AJAX handlers now check capabilities and require a valid nonce (fail-closed).
+* Security: Premium download links now use the same nonce-protected secure handler as the free version.
+* Security: Mobile app (QR) REST login key validation fixed; keys are random, compared in constant time, QR hashes expire and are single use.
+* Security: Directory ZIP download and reset actions restricted to authorised admin users; HTML/SVG files are always served as attachments.
+* Security: Prepared SQL placeholders, escaped output, sanitised colour settings.
+* Compatibility: Tested up to WordPress 7.1; PHP 7.4+.
+* New (Premium, optional "pro" folder): Download statistics and activity log with CSV export, folder ZIP download shortcode [wpdocs_zip], front-end document search shortcode [wpdocs_search].
+* The free version works exactly as before when the "pro" folder is not present.
 = 2.3.4 = 
 * Security: Fixed Stored XSS (CVE-2026-81782) — hardened `sanitize_wpdocs_data()` and added `esc_html`/`esc_attr`/`esc_url` output escaping across frontend and admin views. * Security: Added capability checks to `wpdocs_add_files`, `wpdocs_delete_files`, `wpdocs_update_folder`; removed `nopriv` from `wpdocs_update_view`.
 = 2.3.1 = 
@@ -369,6 +378,9 @@ Use the browse button to select the plugin zip file that was downloaded, then cl
 * Initial Release of WP Docs
 
 == Upgrade Notice ==
+= 2.3.5 =
+Important security hardening. Update recommended.
+
 = 2.3.4 =
 Security release. Fixes Stored XSS (CVE-2026-81782) and adds missing capability checks to AJAX handlers. Update immediately.
 = 2.3.1 = 

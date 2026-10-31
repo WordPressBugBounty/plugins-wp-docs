@@ -1,40 +1,83 @@
 <?php
+	if ( ! defined( 'ABSPATH' ) ) { exit; }
+
+	/**
+	 * Fail-closed request guards (nonce is mandatory, capability is checked first).
+	 */
+	if(!function_exists('wpdocs_get_request_nonce')){
+		function wpdocs_get_request_nonce($keys=array('nonce')){
+			foreach((array)$keys as $key){
+				if(isset($_POST[$key]) && is_scalar($_POST[$key]) && $_POST[$key]!==''){
+					return sanitize_text_field(wp_unslash($_POST[$key]));
+				}
+			}
+			return '';
+		}
+	}
+	if(!function_exists('wpdocs_ajax_guard')){
+		function wpdocs_ajax_guard($capability='manage_options', $keys=array('nonce'), $action='wpdocs_update_options_nonce', $require_login=true){
+			if($require_login && !is_user_logged_in()){
+				wp_send_json_error(array('message'=>__('Please log in to continue.', 'wp-docs')), 401);
+			}
+			if($capability && !current_user_can($capability)){
+				wp_send_json_error(array('message'=>__('Insufficient permissions.', 'wp-docs')), 403);
+			}
+			$nonce = wpdocs_get_request_nonce($keys);
+			if($nonce==='' || !wp_verify_nonce($nonce, $action)){
+				wp_send_json_error(array('message'=>__('Sorry, your nonce did not verify.', 'wp-docs')), 403);
+			}
+			return true;
+		}
+	}
+	if(!function_exists('wpdocs_path_in_uploads')){
+		function wpdocs_path_in_uploads($path){
+			$uploads = wp_get_upload_dir();
+			$base    = realpath($uploads['basedir']);
+			$real    = is_string($path) ? realpath($path) : false;
+			return ($base && $real && strpos(wp_normalize_path($real), trailingslashit(wp_normalize_path($base))) === 0);
+		}
+	}
+	if(!function_exists('wpdocs_dangerous_inline_ext')){
+		function wpdocs_dangerous_inline_ext($path){
+			$ext = strtolower(pathinfo((string)$path, PATHINFO_EXTENSION));
+			return in_array($ext, array('html','htm','xhtml','shtml','svg','svgz','xml','xsl','xslt','js','mjs','php','phtml','swf'), true);
+		}
+	}
+
 	add_action('admin_init', 'wpdocs_version_type_update');
 	
 	function wpdocs_version_type_update(){
 
-				if(isset($_POST['version_type'])){			
-					if ( 
-						! isset( $_POST['version_type_nonce_field'] ) 
-						|| ! wp_verify_nonce( sanitize_wpdocs_data(wp_unslash($_POST['version_type_nonce_field'])), 'version_type_action' ) 
-					) {
-					
-					   print _e('Sorry, your nonce did not verify.', 'wp-docs');
-					   exit;
-					
-					} else {
-					
-					   // process form data
-					
-						
-							
-							update_option('wpdocs_versions_type', sanitize_wpdocs_data($_POST['version_type']));
-							
-							if($_POST['version_type']=='new')
-							wp_redirect('options-general.php?page=wpdocs');
-							else
-							wp_redirect('admin.php?page=wpdocs-engine.php');
-							
-							exit;
-						
-					}
-				}
+		if(!isset($_POST['version_type'])){ return; }
+
+		if(!current_user_can('manage_options')){
+			return;
+		}
+
+		if(
+			!isset($_POST['version_type_nonce_field'])
+			|| !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['version_type_nonce_field'])), 'version_type_action')
+		){
+			wp_die(esc_html__('Sorry, your nonce did not verify.', 'wp-docs'), '', array('response'=>403));
+		}
+
+		$version_type = sanitize_key(wp_unslash($_POST['version_type']));
+		$version_type = ($version_type=='new' ? 'new' : 'old');
+
+		update_option('wpdocs_versions_type', $version_type);
+
+		if($version_type=='new'){
+			wp_safe_redirect(admin_url('options-general.php?page=wpdocs'));
+		}else{
+			wp_safe_redirect(admin_url('admin.php?page=wpdocs-engine.php'));
+		}
+		exit;
 	}
 				
 	function wpdocs_downward_compatibility(){
-		global $wpdocs_data, $wpdocs_versions_type, $wpdocs_pro, $wpdocs_url, $wpdocs_android_settings;
+		global $wpdocs_data, $wpdocs_versions_type, $wpdocs_pro, $wpdocs_url, $wpdocs_android_settings, $wpdocs_premium_link;
 ?>		
-			<h2><?php echo $wpdocs_data['Name']; ?> <?php echo '('.$wpdocs_data['Version'].($wpdocs_pro?') Pro':')'); ?> - <?php _e('Settings', 'wp-docs'); ?></h2>
+			<h2><?php echo esc_html($wpdocs_data['Name']); ?> <?php echo esc_html('('.$wpdocs_data['Version'].($wpdocs_pro?') Pro':')')); ?> - <?php _e('Settings', 'wp-docs'); ?></h2>
             <?php if(!$wpdocs_pro): ?>
             <a style="float:right; position:relative; top:-40px; display:none;" href="<?php echo esc_url($wpdocs_premium_link); ?>" target="_blank"><?php _e('Go Premium', 'wp-docs'); ?></a>
             <?php endif; ?>

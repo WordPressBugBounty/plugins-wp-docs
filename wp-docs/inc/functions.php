@@ -44,7 +44,7 @@
 				}
 	
 				if(stripos($new_input, 'http') || wp_http_validate_url($new_input)){
-					$new_input = sanitize_url($new_input);
+					$new_input = esc_url_raw($new_input);
 				}
 	
 			}
@@ -76,11 +76,11 @@
 	
 			wp_enqueue_media();
 	
-			wp_enqueue_style('wpdocs-common', plugins_url('css/common-styles.css', dirname(__FILE__)), array(), date('Ymdhi'));
-			wp_enqueue_style('wpdocs-admin', plugins_url('css/admin-styles.css', dirname(__FILE__)), array(), date('Ymdhi'));
+			wp_enqueue_style('wpdocs-common', plugins_url('css/common-styles.css', dirname(__FILE__)), array(), WPDOCS_VERSION);
+			wp_enqueue_style('wpdocs-admin', plugins_url('css/admin-styles.css', dirname(__FILE__)), array(), WPDOCS_VERSION);
 	
-			wp_enqueue_script('wpdocs_admin_scripts', plugin_dir_url(dirname(__FILE__)) . 'js/admin-scripts.js', array('jquery', 'jquery-ui-dialog'), time());
-			wp_enqueue_script('wpdocs_verify_scripts', plugin_dir_url(dirname(__FILE__)) . 'js/verify-scripts.js', array('jquery', 'jquery-ui-dialog'), time());
+			wp_enqueue_script('wpdocs_admin_scripts', plugin_dir_url(dirname(__FILE__)) . 'js/admin-scripts.js', array('jquery', 'jquery-ui-dialog'), WPDOCS_VERSION);
+			wp_enqueue_script('wpdocs_verify_scripts', plugin_dir_url(dirname(__FILE__)) . 'js/verify-scripts.js', array('jquery', 'jquery-ui-dialog'), WPDOCS_VERSION);
 			
 			if($wpdocs_pro){
 				wp_enqueue_script('wpdocs_pro_scripts', plugin_dir_url(dirname(__FILE__)) . 'pro/wp-docs-admin.js?t='.time(), array('jquery'));
@@ -463,7 +463,7 @@
 				$is_ajax = array_key_exists('ajax', $wpdocs_options);
 				$is_ajax_url = array_key_exists('ajax_url', $wpdocs_options);
 
-				wp_enqueue_script('wpdocs_pro_scripts', $wpdocs_url . 'pro/wp-docs-pro.js', array('jquery'), time());
+				wp_enqueue_script('wpdocs_pro_scripts', $wpdocs_url . 'pro/wp-docs-pro.js', array('jquery'), WPDOCS_VERSION);
 				$localize_handler = 'wpdocs_pro_scripts';
 				wp_enqueue_script('wpdocs_block_scripts', $wpdocs_url . 'js/jquery.blockUI.js', array('jquery'));
 
@@ -475,9 +475,9 @@
             wp_enqueue_style('fontawesome', plugins_url('css/fontawesome.min.css', dirname(__FILE__)));
 
 
-            wp_enqueue_script('wpdocs_front_scripts', plugin_dir_url(dirname(__FILE__)) . 'js/front-scripts.js', array('jquery'), date('Ymdhi'));
+            wp_enqueue_script('wpdocs_front_scripts', plugin_dir_url(dirname(__FILE__)) . 'js/front-scripts.js', array('jquery'), WPDOCS_VERSION);
 			wp_enqueue_style('wpdocs-common', plugins_url('css/common-styles.css', dirname(__FILE__)));
-			wp_enqueue_style('wpdocs-front', plugins_url('css/front-styles.css', dirname(__FILE__)), array(), date('Ymdhi'));
+			wp_enqueue_style('wpdocs-front', plugins_url('css/front-styles.css', dirname(__FILE__)), array(), WPDOCS_VERSION);
 			
 			$dir_id = (array_key_exists('dir_id', $_GET)?sanitize_wpdocs_data($_GET['dir_id']):0);
 			$dir_id = (!$dir_id && array_key_exists('dir', $_GET)?sanitize_wpdocs_data($_GET['dir']):0);
@@ -710,17 +710,9 @@
 	
 	function wpdocs_create_folder()
 	{
-		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( __("Unauthorized user", 'wp-docs') );
-			wp_die();
-		}
+		wpdocs_ajax_guard('manage_options');
 		
-		$nonce = sanitize_wpdocs_data(wp_unslash($_POST['nonce']));
-		
-		if (!empty($_POST) && isset($_POST['nonce']) && ! wp_verify_nonce( $nonce, 'wpdocs_update_options_nonce' ) )
-			die (__("Sorry, your nonce did not verify.", 'wp-docs'));
-	
-		$post_parent = sanitize_wpdocs_data($_POST['parent_dir']);
+		$post_parent = isset($_POST['parent_dir']) ? absint($_POST['parent_dir']) : 0;
 	
 		$dir_id = wpdocs_create_folder_post($post_parent);
 		
@@ -2518,9 +2510,9 @@ if(!function_exists('wpdocs_update_option')){
 
 		if (
 			! isset($_POST['wpdocs_update_option_nonce']) ||
-			! wp_verify_nonce($_POST['wpdocs_update_option_nonce'], 'wpdocs_update_options_nonce')
+			! wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['wpdocs_update_option_nonce'])), 'wpdocs_update_options_nonce')
 		) {
-			wp_send_json_error('Invalid nonce '.$_POST['wpdocs_update_option_nonce']);
+			wp_send_json_error('Invalid nonce.');
 		} else {
 			//wp_send_json_success('Nonce valid!');
 		}
@@ -2818,7 +2810,7 @@ if(!function_exists('wpdocs_add_breadcrumb')){
 				$wpdocs_view = get_option( 'wpdocs_view', array() );
 				$wpdocs_view = is_array( $wpdocs_view ) ? $wpdocs_view : array();
 	
-				$parent_dir = sanitize_wpdocs_data( $_POST['parent_dir'] ?? '' );
+				$parent_dir = absint( $_POST['parent_dir'] ?? 0 );
 				$view_val   = sanitize_wpdocs_data( $_POST['update_view'] );
 	
 				$wpdocs_view[ $parent_dir ] = $view_val;
@@ -3078,6 +3070,11 @@ if(!function_exists('wpdocs_add_breadcrumb')){
 				exit;
 			}
 		
+			$external_url = apply_filters('wpdocs_download_external_url', '', $file_id);
+			if($external_url){
+				wp_redirect(esc_url_raw($external_url), 302);
+				exit;
+			}
 			// Adjust this according to where you store the file
 			$file = get_attached_file($file_id);
 		
@@ -3110,14 +3107,13 @@ if(!function_exists('wpdocs_add_breadcrumb')){
 				? $mime['type']
 				: 'application/octet-stream';
 		
+			do_action('wpdocs_before_download', $file_id, $file_real);
+			$disposition = wpdocs_dangerous_inline_ext($file_real) ? 'attachment' : 'inline';
+			$safe_name   = str_replace(array('"', '\\', "\r", "\n"), '', basename($file_real));
+			header('X-Content-Type-Options: nosniff');
 			header('Content-Type: ' . $mime);
 			header('Content-Length: ' . filesize($file_real));
-			header(
-				'Content-Disposition: inline; filename="' .
-				basename($file_real) .
-				'"'
-			);
-		
+			header('Content-Disposition: ' . $disposition . '; filename="' . $safe_name . '"');
 			readfile($file_real);
 			exit;
 		}
@@ -3139,7 +3135,7 @@ if(!function_exists('wpdocs_add_breadcrumb')){
 				
 				//pree($_GET);exit;
 				
-				if(isset($_GET['download'])){
+				if(isset($_GET['download']) && is_admin() && current_user_can('publish_pages')){
 					
 					$wpdocs_clear_clutter = get_option('wpdocs_clear_clutter', array());
 					$wpdocs_clear_clutter = (is_array($wpdocs_clear_clutter)?$wpdocs_clear_clutter:array());
@@ -3149,9 +3145,9 @@ if(!function_exists('wpdocs_add_breadcrumb')){
 							if(is_array($wpdocs_clear_clutter_iter)){
 								
 								list($rm_dir, $zip_path) = $wpdocs_clear_clutter_iter;
-								unlink($zip_path);
+								if(wpdocs_path_in_uploads($zip_path) && is_file($zip_path)){ unlink($zip_path); }
 								
-								if (is_dir($rm_dir)) {
+								if (wpdocs_path_in_uploads($rm_dir) && is_dir($rm_dir)) {
 									$dir = new RecursiveDirectoryIterator($rm_dir, RecursiveDirectoryIterator::SKIP_DOTS);
 									foreach (new RecursiveIteratorIterator($dir, RecursiveIteratorIterator::CHILD_FIRST ) as $filename => $file) {
 										if (is_file($filename))
@@ -3170,7 +3166,7 @@ if(!function_exists('wpdocs_add_breadcrumb')){
 					
 						
 					
-					$wpdocs_dir = sanitize_wpdocs_data($_GET['wpdocs_dir']);
+					$wpdocs_dir = absint($_GET['wpdocs_dir']);
 					//pree($wpdocs_dir);exit;
 					$zip =  wpdocs_download_zip($wpdocs_dir);
 					$rm_dir = str_replace('.zip', '',$zip['path'] );
@@ -3208,10 +3204,12 @@ if(!function_exists('wpdocs_add_breadcrumb')){
 					
 				}
 				
-				if(isset($_GET['clear'])){
+				if(isset($_GET['clear']) && is_admin() && current_user_can('manage_options')){
 					global $wpdocs_url, $wpdb, $wpdocs_post_types;
 					update_option('wpdocs_options', array());
-					$wpdb->query($wpdb->prepare("DELETE FROM $wpdb->posts WHERE post_type IN ('".implode("','", $wpdocs_post_types)."')"));
+					$wpdocs_pt_values = array_values($wpdocs_post_types);
+					$wpdocs_pt_holders = implode(',', array_fill(0, count($wpdocs_pt_values), '%s'));
+					$wpdb->query($wpdb->prepare("DELETE FROM $wpdb->posts WHERE post_type IN ($wpdocs_pt_holders)", $wpdocs_pt_values));
 					wp_redirect(admin_url('options-general.php?page=wpdocs'));exit;
 				}
 				
@@ -3333,6 +3331,9 @@ if(!function_exists('wpdocs_add_breadcrumb')){
 	if(!function_exists('wp_docs_import_memphis_docs')){
 		function wp_docs_import_memphis_docs(){
 			
+			if ( ! current_user_can( 'manage_options' ) ) {
+				wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'wp-docs' ) ), 403 );
+			}
 			$result_array = array(
 				'status' => false,
 			);
@@ -3372,6 +3373,9 @@ if(!function_exists('wpdocs_add_breadcrumb')){
 	if(!function_exists('wp_docs_import_memphis_rollback')){
 		function wp_docs_import_memphis_rollback(){
 			
+			if ( ! current_user_can( 'manage_options' ) ) {
+				wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'wp-docs' ) ), 403 );
+			}
 			$result_array = array(
 				'status' => false,
 			);
@@ -3399,7 +3403,7 @@ if(!function_exists('wpdocs_add_breadcrumb')){
 			global $wpdb;
 			$name = esc_sql('Memphis Documents');
 
-			$query = $wpdb->prepare("SELECT max(ID) FROM $wpdb->posts WHERE post_title LIKE '%$name%'");
+			$query = $wpdb->prepare("SELECT max(ID) FROM $wpdb->posts WHERE post_title LIKE %s", '%'.$wpdb->esc_like($name).'%');
 
 			$result = $wpdb->get_var($query);			
 			if($result){
@@ -3432,7 +3436,7 @@ if(!function_exists('wpdocs_add_breadcrumb')){
 
 			$dir_id = 0;
 
-			$query = $wpdb->prepare("SELECT max(ID) FROM $wpdb->posts WHERE post_title LIKE '%$name%'");
+			$query = $wpdb->prepare("SELECT max(ID) FROM $wpdb->posts WHERE post_title LIKE %s", '%'.$wpdb->esc_like($name).'%');
 			
 			$result = $wpdb->get_var($query);			
 			if($result){
