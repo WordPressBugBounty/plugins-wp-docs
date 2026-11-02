@@ -5,7 +5,7 @@ License: GPL2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires at least: 5.8
 Tested up to: 7.1
-Stable tag: 2.3.5
+Stable tag: 2.3.6
 Requires PHP: 7.4
 A documents management tool for education portals.
 
@@ -136,6 +136,14 @@ Use the browse button to select the plugin zip file that was downloaded, then cl
 20. File description instead of file name.
 
 == Changelog ==
+= 2.3.6 =
+* Security: Fixed authenticated (Contributor+) SQL Injection via the [wpdocs] shortcode 'orderby' and 'order' attributes (CVE-2026-120504). Reported by Wordfence PRISM.
+* Security: ORDER BY column and direction are now allow-listed (title, date, modified, name, ID, menu_order / ASC, DESC); all other values fall back to safe defaults.
+* Security: Folder queries now use fully prepared placeholders for post status, post types and parent IDs.
+* Security: Front-end navigation nonce checks are now fail-closed; omitting the nonce key no longer skips verification (free and premium).
+* Fix: Recursive folder listing now matches every parent ID instead of only the first.
+* Compatibility: Tested up to WordPress 7.1; PHP 7.4+.
+* Update immediately if your site allows Contributor or Author accounts.
 = 2.3.5 =
 * Security: Premium (pro) AJAX handlers now check capabilities and require a valid nonce (fail-closed).
 * Security: Premium download links now use the same nonce-protected secure handler as the free version.
@@ -378,6 +386,9 @@ Use the browse button to select the plugin zip file that was downloaded, then cl
 * Initial Release of WP Docs
 
 == Upgrade Notice ==
+= 2.3.6 =
+Critical security release. Fixes an authenticated SQL Injection (CVE-2026-120504) in the [wpdocs] shortcode. Update immediately.
+
 = 2.3.5 =
 Important security hardening. Update recommended.
 

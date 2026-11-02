@@ -543,13 +543,49 @@
 		include_once('wpdocs_settings.php');
 	}
 	
+	/**
+	 * Allow-list for ORDER BY columns. SQL identifiers cannot be parameterised by
+	 * $wpdb->prepare(), so anything not listed here falls back to post_title.
+	 */
+	if(!function_exists('wpdocs_sanitize_orderby')){
+		function wpdocs_sanitize_orderby($orderby='post_title'){
+			$allowed = array(
+				'title'         => 'post_title',
+				'post_title'    => 'post_title',
+				'date'          => 'post_date',
+				'post_date'     => 'post_date',
+				'modified'      => 'post_modified',
+				'post_modified' => 'post_modified',
+				'name'          => 'post_name',
+				'post_name'     => 'post_name',
+				'id'            => 'ID',
+				'menu_order'    => 'menu_order',
+			);
+			$key = is_string($orderby) ? strtolower(trim($orderby)) : '';
+			return isset($allowed[$key]) ? $allowed[$key] : 'post_title';
+		}
+	}
+	/**
+	 * Allow-list for the ORDER direction: only ASC or DESC, anything else is ASC.
+	 */
+	if(!function_exists('wpdocs_sanitize_order')){
+		function wpdocs_sanitize_order($order='ASC'){
+			return (is_string($order) && strtoupper(trim($order))==='DESC') ? 'DESC' : 'ASC';
+		}
+	}
+
 	function wpdocs_list_inner($post_parent='', $recursive=false, $orderby='post_title', $order='ASC', $exclude_post_type=array()){
 		
 		global $wpdb, $wpdocs_post_types, $wpdocs_post_status;
 		
+		// Never trust sort arguments: allow-list column and direction (CVE-2026-120504).
+		$orderby = wpdocs_sanitize_orderby($orderby);
+		$order   = wpdocs_sanitize_order($order);
+		
 		$ids = (is_array($post_parent)?$post_parent:explode(',', $post_parent));
 		$ids = array_map('trim', $ids);
 		$ids = array_filter($ids, 'is_numeric');	
+		$ids = array_map('absint', $ids);
 		$ids = (empty($ids)?array(0):$ids);
 		
 		$posts_array = array();
@@ -569,8 +605,15 @@
 			}
 			
 
-			$query_str = $wpdb->prepare('SELECT ID, post_title, post_type, post_content, post_parent, guid FROM '.$wpdb->posts.' WHERE post_status=%s AND post_type IN ("'.implode('","', $post_types).'") AND post_parent IN ("'.implode(',', $ids).'") ORDER BY '. $orderby.' '.$order,							
-							$wpdocs_post_status
+			$post_types_values = array_values(array_map('sanitize_key', $post_types));
+			$post_types_values = (empty($post_types_values) ? array('') : $post_types_values);
+			$type_holders      = implode(',', array_fill(0, count($post_types_values), '%s'));
+			$id_holders        = implode(',', array_fill(0, count($ids), '%d'));
+			
+			// $orderby and $order are allow-listed above; every value is a prepared placeholder.
+			$query_str = $wpdb->prepare(
+							'SELECT ID, post_title, post_type, post_content, post_parent, guid FROM '.$wpdb->posts.' WHERE post_status=%s AND post_type IN ('.$type_holders.') AND post_parent IN ('.$id_holders.') ORDER BY '.$orderby.' '.$order,
+							array_merge(array($wpdocs_post_status), $post_types_values, array_values($ids))
 						);
 			
 			//pree($query_str);
@@ -600,6 +643,9 @@
 		//pree($post_parent);pree($orderby);pree($order);pree($return_type);pree($exclude_post_type);
 		
 		global $wpdocs_post_types, $wpdocs_post_status;
+		
+		$orderby = wpdocs_sanitize_orderby($orderby);
+		$order   = wpdocs_sanitize_order($order);
 		
 		$ret = $posts_array = array();
 	
@@ -1083,18 +1129,16 @@
 	function wpdocs_front_list($atts=array())
 	{
 		
+		// Fail-closed: any front-end POST that carries WP Docs navigation keys must present a valid nonce.
+		// (Previously the check only ran when the nonce key was present, so omitting it bypassed the guard.)
 		if ( 
 			!empty($_POST) && !wp_doing_ajax() && 
-			(				
-				(isset( $_POST['wpdocs_front_list_nonce'] ) && ! wp_verify_nonce( sanitize_wpdocs_data(wp_unslash($_POST['wpdocs_front_list_nonce_field'])), 'wpdocs_front_list_nonce' ) )
-			)
+			( isset($_POST['wpd_dir_id_ajax']) || isset($_POST['wpd_home_id']) || isset($_POST['wpdocs_front_list_nonce']) || isset($_POST['wpdocs_front_list_nonce_field']) )
 		) {
-		
-		   print _e('Sorry, your nonce did not verify.', 'wp-docs');
-		   exit;
-		
-		} else {
-			
+			$wpdocs_front_nonce = isset($_POST['wpdocs_front_list_nonce_field']) ? sanitize_text_field(wp_unslash($_POST['wpdocs_front_list_nonce_field'])) : '';
+			if ( ! wp_verify_nonce( $wpdocs_front_nonce, 'wpdocs_front_list_nonce' ) ) {
+				wp_die( esc_html__('Sorry, your nonce did not verify.', 'wp-docs'), '', array('response' => 403) );
+			}
 		}
 					
 		
@@ -1155,8 +1199,9 @@
 		$dir = ($dir?$dir:((isset($atts['dir']) && $atts['dir']!='' && is_numeric($atts['dir']) && wpdocs_folder_exists($atts['dir']))?sanitize_wpdocs_data($atts['dir']):$dir));
 		$no_breadcrumb = (isset($atts['breadcrumb']) && $atts['breadcrumb']=='false');
 		$default_view = (isset($atts['view']) ? $atts['view'] : 'list');
-		$default_orderby = (isset($atts['orderby']) ? $atts['orderby'] : 'title');
-		$default_order = (isset($atts['order']) ? $atts['order'] : 'ASC');
+		$atts = (is_array($atts) ? $atts : array());
+		$default_orderby = wpdocs_sanitize_orderby(isset($atts['orderby']) ? $atts['orderby'] : 'title');
+		$default_order = wpdocs_sanitize_order(isset($atts['order']) ? $atts['order'] : 'ASC');
 		
 		
 		
